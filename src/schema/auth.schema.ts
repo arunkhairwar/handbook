@@ -1,8 +1,32 @@
 import { z } from "zod";
 
+export const phoneValidation = z
+  .string()
+  .min(1, "Phone number is required")
+  .regex(/^[6-9]\d{9}$/, "Invalid Indian phone number");
+
+export const emailValidation = z
+  .string()
+  .min(1, "Email is required")
+  .trim()
+  .email("Please enter a valid email address")
+  .transform((val) => val.toLowerCase());
+
 export const registerSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long"),
-  mobile: z.string().min(10, "Mobile number must be at least 10 digits long"),
-  email: z.string().email("Invalid email address"),
+  mobile: phoneValidation,
+  email: emailValidation,
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
+
+export const loginSchema = z.object({
+  email: emailValidation,
+  // phone: phoneValidation,
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>;

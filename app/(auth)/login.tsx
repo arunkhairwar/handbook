@@ -1,70 +1,36 @@
+import { TextInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
-import { Input } from "@/src/components/ui/Input";
-import { useStore } from "@/store/mockStore";
-import { Link, useRouter } from "expo-router";
+import { useAuth } from "@/src/hooks";
+import { LoginFormData, loginSchema } from "@/src/schema/auth.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "expo-router";
 import React, { useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Text,
-  View,
-} from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { da } from "zod/v4/locales";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const login = useStore((state) => state.login);
+  // const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading } = useAuth();
 
-  const validate = () => {
-    let isValid = true;
-    const newErrors = { email: "", password: "" };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    if (!email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Invalid email format";
-      isValid = false;
-    }
-
-    if (!password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleLogin = async () => {
-    if (!validate()) {
-      return;
-    }
-
-    setLoading(true);
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const success = login(email, password);
-    setLoading(false);
-
-    if (success) {
-      const user = useStore.getState().user;
-      if (user?.role === "CONTRACTOR") {
-        router.replace("../(admin)/dashboard");
-      } else {
-        router.replace("../(worker)/dashboard");
-      }
-    } else {
-      Alert.alert("Login Failed", "Invalid email or password");
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await login(data);
+    } catch {
+      // Error already handled in useAuth hook with toast
     }
   };
 
@@ -82,34 +48,48 @@ export default function LoginScreen() {
         </Text>
 
         <View className="w-full">
-          <Input
-            label="Email"
-            placeholder="Enter email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              if (errors.email) setErrors({ ...errors, email: "" });
-            }}
-            error={errors.email}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Email"
+                placeholder="Enter email"
+                keyboardType="email-address"
+                leftIcon="mail"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.email?.message as string | undefined}
+              />
+            )}
           />
 
-          <Input
-            label="Password"
-            placeholder="Enter password"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (errors.password) setErrors({ ...errors, password: "" });
-            }}
-            error={errors.password}
-            rightIcon={showPassword ? "eye-off" : "eye"}
-            onRightIconPress={() => setShowPassword(!showPassword)}
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Password"
+                placeholder="Enter your password"
+                leftIcon="lock-closed-outline"
+                isPassword
+                autoCapitalize="none"
+                autoComplete="password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+              />
+            )}
           />
 
-          <Button title="Login" onPress={handleLogin} isLoading={loading} />
+          <Button
+            title="Login"
+            onPress={handleSubmit(onSubmit)}
+            isLoading={isLoading}
+          />
 
           <View className="flex-row justify-center mt-6">
             <Text className="text-slate-500 text-sm">
