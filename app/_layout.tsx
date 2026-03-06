@@ -1,17 +1,25 @@
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 import "../global.css";
+import SplashScreenLoader from "@/src/components/SplashScreenLoader";
+
 export default function RootLayout() {
+  const [appReady, setAppReady] = useState(false);
+
   useEffect(() => {
-    // Hide splash screen immediately as we don't have assets to load right now
+    // Hide the native splash screen so our custom one takes over
     SplashScreen.hideAsync();
   }, []);
+
+  if (!appReady) {
+    return <SplashScreenLoader onFinish={() => setAppReady(true)} />;
+  }
 
   return (
     <>

@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import { Badge } from '@/src/components/ui/Badge';
+import { Button } from '@/src/components/ui/Button';
+import { Card } from '@/src/components/ui/Card';
+import { Input } from '@/src/components/ui/Input';
 import { Colors } from '@/constants/Colors';
 import { useStore } from '@/store/mockStore';
 import { Payment } from '@/types';

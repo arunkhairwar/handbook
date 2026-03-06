@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import { Colors } from '@/constants/Colors';
+import { Button } from '@/src/components/ui/Button';
+import { Card } from '@/src/components/ui/Card';
+import { Input } from '@/src/components/ui/Input';
 import { useStore } from '@/store/mockStore';
 import { Payment } from '@/types';
 import { useLocalSearchParams } from 'expo-router';
