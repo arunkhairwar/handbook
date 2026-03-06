@@ -4,10 +4,9 @@ import { useAuth } from "@/src/hooks";
 import { LoginFormData, loginSchema } from "@/src/schema/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
-import { da } from "zod/v4/locales";
 
 export default function LoginScreen() {
   // const [showPassword, setShowPassword] = useState(false);

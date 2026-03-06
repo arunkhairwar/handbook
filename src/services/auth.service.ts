@@ -4,7 +4,12 @@
 import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
 import { LoginFormData, RegisterFormData } from "../schema/auth.schema";
-import { LoginResponse, RegisterResponse, VerifyResponse } from "../types";
+import {
+  ApiError,
+  LoginResponse,
+  RegisterResponse,
+  VerifyResponse,
+} from "../types";
 
 export const authService = {
   /**

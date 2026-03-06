@@ -1,14 +1,17 @@
 import { Colors } from "@/constants/Colors";
+import { userAtom } from "@/src/atoms/auth.atoms";
 import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
 import { useStore } from "@/store/mockStore";
 import { useRouter } from "expo-router";
+import { useAtomValue } from "jotai";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function ContractorDashboard() {
-  const { sites, user, payments, expenses } = useStore();
+  const { sites, payments, expenses } = useStore();
+  const user = useAtomValue(userAtom);
   const router = useRouter();
 
   const activeSites = sites.filter((s) => s.status === "ONGOING");

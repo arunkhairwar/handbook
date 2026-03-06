@@ -8,6 +8,8 @@ SplashScreen.preventAutoHideAsync();
 
 import "../global.css";
 import SplashScreenLoader from "@/src/components/SplashScreenLoader";
+import Toast from "react-native-toast-message";
+import { getToastConfig } from "@/src/toast/toastConfig";
 
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
@@ -19,6 +21,7 @@ export default function RootLayout() {
   if (!appReady) {
     return <SplashScreenLoader onFinish={() => setAppReady(true)} />;
   }
+  const isDark = false;
 
   return (
     <>
@@ -29,6 +32,7 @@ export default function RootLayout() {
         <Stack.Screen name="(worker)" />
       </Stack>
       <StatusBar style="dark" />
+      <Toast config={getToastConfig(isDark)} />
     </>
   );
 }
