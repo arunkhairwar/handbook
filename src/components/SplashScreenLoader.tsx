@@ -1,15 +1,9 @@
 import { Images } from "@/constants/images";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Animated, Dimensions, Image, Text, View } from "react-native";
 
 const { width } = Dimensions.get("window");
+const BAR_WIDTH = width * 0.7;
 
 interface Props {
   onFinish: () => void;
@@ -67,7 +61,10 @@ export default function SplashScreenLoader({ onFinish }: Props) {
   }, []);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View
+      className="flex-1 bg-white items-center justify-center gap-12"
+      style={{ opacity: fadeAnim }}
+    >
       {/* Logo */}
       <Animated.View
         style={{
@@ -76,64 +73,31 @@ export default function SplashScreenLoader({ onFinish }: Props) {
           alignItems: "center",
         }}
       >
-        <Image source={Images.logo} style={styles.logo} resizeMode="contain" />
+        <Image
+          source={Images.logo}
+          className="w-44 h-44"
+          resizeMode="contain"
+        />
       </Animated.View>
 
       {/* Loading section */}
-      <View style={styles.loadingSection}>
+      <View className="items-center gap-3">
         {/* Progress bar track */}
-        <View style={styles.barTrack}>
+        <View
+          className="h-1.5 bg-gray-200 rounded-full overflow-hidden"
+          style={{ width: BAR_WIDTH }}
+        >
           <Animated.View
-            style={[
-              styles.barFill,
-              {
-                width: progressAnim,
-              },
-            ]}
+            className="h-full bg-blue-500 rounded-full"
+            style={{ width: progressAnim }}
           />
         </View>
 
         {/* Percentage text */}
-        <Text style={styles.percentText}>{progress}%</Text>
+        <Text className="text-sm font-semibold text-gray-500 tracking-widest">
+          {progress}%
+        </Text>
       </View>
     </Animated.View>
   );
 }
-
-const BAR_WIDTH = width * 0.7;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 48,
-  },
-  logo: {
-    width: 180,
-    height: 180,
-  },
-  loadingSection: {
-    alignItems: "center",
-    gap: 12,
-  },
-  barTrack: {
-    width: BAR_WIDTH,
-    height: 6,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  barFill: {
-    height: "100%",
-    backgroundColor: "#3B82F6",
-    borderRadius: 999,
-  },
-  percentText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6B7280",
-    letterSpacing: 1,
-  },
-});

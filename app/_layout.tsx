@@ -13,7 +13,6 @@ export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-    // Hide the native splash screen so our custom one takes over
     SplashScreen.hideAsync();
   }, []);
 
