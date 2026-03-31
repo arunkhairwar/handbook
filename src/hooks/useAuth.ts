@@ -45,18 +45,24 @@ export function useAuth(): UseAuthReturn {
 
       if (storedToken) {
         setToken(storedToken);
+        // Verify token with API to populate user data and navigate
+        await verify();
       } else {
         setAuthStatus(AuthStatus.UNAUTHENTICATED);
       }
     } catch (error) {
-      setAuthStatus(AuthStatus.ERROR);
+      // Token is invalid or expired — clear everything and send to login
+      await clearAuthStorage();
+      setToken(null);
+      setUser(null);
+      setAuthStatus(AuthStatus.UNAUTHENTICATED);
       if (__DEV__) {
         console.error("Failed to initialize auth:", error);
       }
     } finally {
       setAuthLoading(false);
     }
-  }, [setToken, setAuthLoading, setAuthStatus]);
+  }, [setToken, setUser, setAuthLoading, setAuthStatus]);
 
   /**
    * Login user

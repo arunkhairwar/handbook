@@ -1,4 +1,5 @@
 import { Images } from "@/constants/images";
+import { useAuth } from "@/src/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Image, Text, View } from "react-native";
 
@@ -15,8 +16,30 @@ export default function SplashScreenLoader({ onFinish }: Props) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const logoScale = useRef(new Animated.Value(0.8)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
+  const { initializeAuth } = useAuth();
+
+  const authReady = useRef(false);
+  const animDone = useRef(false);
+
+  const tryFinish = () => {
+    if (authReady.current && animDone.current) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start(() => {
+        onFinish();
+      });
+    }
+  };
 
   useEffect(() => {
+    // Initialize auth on app start
+    initializeAuth().finally(() => {
+      authReady.current = true;
+      tryFinish();
+    });
+
     // Animate logo in
     Animated.parallel([
       Animated.timing(logoOpacity, {
@@ -34,7 +57,7 @@ export default function SplashScreenLoader({ onFinish }: Props) {
 
     // Animate progress bar
     Animated.timing(progressAnim, {
-      toValue: width * 0.7, // 70% of screen width (the bar width)
+      toValue: width * 0.7,
       duration: 2000,
       useNativeDriver: false,
     }).start();
@@ -46,16 +69,10 @@ export default function SplashScreenLoader({ onFinish }: Props) {
       setProgress(current);
       if (current >= 100) {
         clearInterval(interval);
-        // Fade out entire screen, then notify parent
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 400,
-          useNativeDriver: true,
-        }).start(() => {
-          onFinish();
-        });
+        animDone.current = true;
+        tryFinish();
       }
-    }, 20); // 20ms * 100 = 2000ms total
+    }, 20);
 
     return () => clearInterval(interval);
   }, []);
