@@ -3,7 +3,12 @@ import { useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import Toast from "react-native-toast-message";
 
-import { authLoadingAtom, tokenAtom, userAtom } from "../atoms/auth.atoms";
+import {
+  authLoadingAtom,
+  authStatusAtom,
+  tokenAtom,
+  userAtom,
+} from "../atoms/auth.atoms";
 import { LoginFormData, RegisterFormData } from "../schema/auth.schema";
 import {
   clearAuthStorage,
@@ -13,7 +18,7 @@ import {
 } from "../storage/secure-storage";
 import { ApiError, Role, User } from "../types";
 import { authService } from "../services/auth.service";
-import { Routes } from "../enums";
+import { AuthStatus, Routes } from "../enums";
 
 type UseAuthReturn = {
   isLoading: boolean;
@@ -26,30 +31,32 @@ type UseAuthReturn = {
 
 export function useAuth(): UseAuthReturn {
   const setAuthLoading = useSetAtom(authLoadingAtom);
+  const setAuthStatus = useSetAtom(authStatusAtom);
   const setToken = useSetAtom(tokenAtom);
   const setUser = useSetAtom(userAtom);
   const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Initialize auth state from secure storage
-   */
   const initializeAuth = useCallback(async () => {
     try {
       setAuthLoading(true);
+      setAuthStatus(AuthStatus.LOADING);
 
       const storedToken = await getSecureValue(StorageKeys.AUTH_TOKEN);
 
       if (storedToken) {
         setToken(storedToken);
+      } else {
+        setAuthStatus(AuthStatus.UNAUTHENTICATED);
       }
     } catch (error) {
+      setAuthStatus(AuthStatus.ERROR);
       if (__DEV__) {
         console.error("Failed to initialize auth:", error);
       }
     } finally {
       setAuthLoading(false);
     }
-  }, [setToken, setAuthLoading]);
+  }, [setToken, setAuthLoading, setAuthStatus]);
 
   /**
    * Login user
@@ -58,6 +65,7 @@ export function useAuth(): UseAuthReturn {
     async (credentials: LoginFormData) => {
       try {
         setIsLoading(true);
+        setAuthStatus(AuthStatus.LOADING);
 
         const response = await authService.login(credentials);
 
@@ -68,6 +76,7 @@ export function useAuth(): UseAuthReturn {
         setToken(response.data.token);
         verify();
       } catch (error) {
+        setAuthStatus(AuthStatus.ERROR);
         const apiError = error as ApiError;
         Toast.show({
           type: "error",
@@ -78,7 +87,7 @@ export function useAuth(): UseAuthReturn {
         setIsLoading(false);
       }
     },
-    [setToken],
+    [setToken, setAuthStatus],
   );
 
   /**
@@ -123,6 +132,8 @@ export function useAuth(): UseAuthReturn {
 
       // Clear atoms
       setToken(null);
+      setUser(null);
+      setAuthStatus(AuthStatus.UNAUTHENTICATED);
 
       Toast.show({
         type: "success",
@@ -142,26 +153,30 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [setToken]);
+  }, [setToken, setUser, setAuthStatus]);
 
   const verify = useCallback(async () => {
     try {
       setIsLoading(true);
+      setAuthStatus(AuthStatus.LOADING);
       const response = await authService.verify();
 
       // Update atoms
       setUser(response.data);
+      setAuthStatus(AuthStatus.AUTHENTICATED);
       Toast.show({
         type: "success",
         text1: `Welcome ${response.data.name}`,
         text2: response.message,
       });
+
       if (response.data.role === Role.CONTRACTOR) {
         router.replace(Routes.ADMIN_DASHBOARD);
       } else if (response.data.role === Role.WORKER) {
         router.replace(Routes.WORKER_DASHBOARD);
       }
     } catch (error) {
+      setAuthStatus(AuthStatus.UNAUTHENTICATED);
       const apiError = error as ApiError;
       Toast.show({
         type: "error",
@@ -172,7 +187,7 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [setToken, setUser]);
+  }, [setToken, setUser, setAuthStatus]);
 
   return {
     isLoading,
