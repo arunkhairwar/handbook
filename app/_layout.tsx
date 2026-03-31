@@ -32,7 +32,7 @@ export default function RootLayout() {
         <Stack.Screen name="(worker)" />
       </Stack>
       <StatusBar style="dark" />
-      <Toast config={getToastConfig(isDark)} visibilityTime={2000} />
+      <Toast config={getToastConfig(isDark)} visibilityTime={3000} />
     </>
   );
 }

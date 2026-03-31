@@ -5,9 +5,11 @@ import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { Button } from "@/src/components/ui/Button";
+import { useAuth } from "@/src/hooks";
 
 export default function WorkerDashboard() {
   const router = useRouter();
+  const { logout } = useAuth();
   const user = useAtomValue(userAtom);
   const allAttendance = useStore((state) => state.attendance);
   const allPayments = useStore((state) => state.payments);
@@ -32,7 +34,10 @@ export default function WorkerDashboard() {
   const totalReceived = payments.reduce((acc, p) => acc + p.amount, 0);
 
   return (
-    <ScrollView className="flex-1 bg-slate-50" contentContainerClassName="p-4 pt-16">
+    <ScrollView
+      className="flex-1 bg-slate-50"
+      contentContainerClassName="p-4 pt-16"
+    >
       <View className="mb-6">
         <Text className="text-2xl font-bold text-slate-800">
           Namaste, {user.name}
@@ -45,16 +50,22 @@ export default function WorkerDashboard() {
       <View className="flex-row justify-between mb-4">
         <View className="flex-1 mx-1 items-center p-4 bg-white rounded-lg shadow-sm">
           <Text className="text-sm text-slate-500 mb-1">Days Worked</Text>
-          <Text className="text-2xl font-bold text-slate-900">{daysWorked}</Text>
+          <Text className="text-2xl font-bold text-slate-900">
+            {daysWorked}
+          </Text>
         </View>
         <View className="flex-1 mx-1 items-center p-4 bg-white rounded-lg shadow-sm">
           <Text className="text-sm text-slate-500 mb-1">Sites</Text>
-          <Text className="text-2xl font-bold text-slate-900">{mySites.length}</Text>
+          <Text className="text-2xl font-bold text-slate-900">
+            {mySites.length}
+          </Text>
         </View>
       </View>
 
       <View className="mb-5 p-4 bg-white rounded-lg shadow-sm">
-        <Text className="text-sm text-slate-500 mb-1">Total Payment Received</Text>
+        <Text className="text-sm text-slate-500 mb-1">
+          Total Payment Received
+        </Text>
         <Text className="text-2xl font-bold text-emerald-500">
           ₹{totalReceived}
         </Text>
@@ -82,7 +93,7 @@ export default function WorkerDashboard() {
       <Button
         title="Logout"
         variant="danger"
-        onPress={() => router.replace("../(auth)/login")}
+        onPress={logout}
         style={{ marginTop: 24 }}
       />
     </ScrollView>
