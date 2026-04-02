@@ -16,7 +16,7 @@ import {
   setSecureValue,
   StorageKeys,
 } from "../storage/secure-storage";
-import { ApiError, Role, User } from "../types";
+import { ApiError } from "../types";
 import { authService } from "../services/auth.service";
 import { AuthStatus, Routes } from "../enums";
 
@@ -36,6 +36,40 @@ export function useAuth(): UseAuthReturn {
   const setUser = useSetAtom(userAtom);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Verify token with API — only updates atoms, no navigation.
+   * Navigation is handled by index.tsx reacting to auth atom changes.
+   */
+  const verify = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setAuthStatus(AuthStatus.LOADING);
+      const response = await authService.verify();
+
+      setUser(response.data);
+      setAuthStatus(AuthStatus.AUTHENTICATED);
+      Toast.show({
+        type: "success",
+        text1: `Welcome ${response.data.name}`,
+        text2: response.message,
+      });
+    } catch (error) {
+      setAuthStatus(AuthStatus.UNAUTHENTICATED);
+      const apiError = error as ApiError;
+      Toast.show({
+        type: "error",
+        text1: "Verification Failed",
+        text2: apiError.message,
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setUser, setAuthStatus]);
+
+  /**
+   * Initialize auth on app start — checks stored token and verifies it.
+   */
   const initializeAuth = useCallback(async () => {
     try {
       setAuthLoading(true);
@@ -45,13 +79,11 @@ export function useAuth(): UseAuthReturn {
 
       if (storedToken) {
         setToken(storedToken);
-        // Verify token with API to populate user data and navigate
         await verify();
       } else {
         setAuthStatus(AuthStatus.UNAUTHENTICATED);
       }
     } catch (error) {
-      // Token is invalid or expired — clear everything and send to login
       await clearAuthStorage();
       setToken(null);
       setUser(null);
@@ -62,7 +94,7 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setAuthLoading(false);
     }
-  }, [setToken, setUser, setAuthLoading, setAuthStatus]);
+  }, [setToken, setUser, setAuthLoading, setAuthStatus, verify]);
 
   /**
    * Login user
@@ -75,12 +107,10 @@ export function useAuth(): UseAuthReturn {
 
         const response = await authService.login(credentials);
 
-        // Store token and user in secure storage
         await setSecureValue(StorageKeys.AUTH_TOKEN, response.data.token);
 
-        // Update atoms
         setToken(response.data.token);
-        verify();
+        await verify();
       } catch (error) {
         setAuthStatus(AuthStatus.ERROR);
         const apiError = error as ApiError;
@@ -93,12 +123,11 @@ export function useAuth(): UseAuthReturn {
         setIsLoading(false);
       }
     },
-    [setToken, setAuthStatus],
+    [setToken, setAuthStatus, verify],
   );
 
   /**
    * Register new user
-   * Note: Register API doesn't return a token, so we redirect to login after success
    */
   const register = useCallback(async (data: RegisterFormData) => {
     try {
@@ -134,10 +163,8 @@ export function useAuth(): UseAuthReturn {
     try {
       setIsLoading(true);
 
-      // Clear secure storage
       await clearAuthStorage();
 
-      // Clear atoms
       setToken(null);
       setUser(null);
       setAuthStatus(AuthStatus.UNAUTHENTICATED);
@@ -148,47 +175,12 @@ export function useAuth(): UseAuthReturn {
         text2: "You have been successfully logged out",
       });
 
-      // Navigate to login
       router.replace(Routes.LOGIN);
     } catch (error) {
       Toast.show({
         type: "error",
         text1: "Logout Failed",
         text2: "An error occurred while logging out",
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setToken, setUser, setAuthStatus]);
-
-  const verify = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setAuthStatus(AuthStatus.LOADING);
-      const response = await authService.verify();
-
-      // Update atoms
-      setUser(response.data);
-      setAuthStatus(AuthStatus.AUTHENTICATED);
-      Toast.show({
-        type: "success",
-        text1: `Welcome ${response.data.name}`,
-        text2: response.message,
-      });
-
-      if (response.data.role === Role.CONTRACTOR) {
-        router.replace(Routes.ADMIN_DASHBOARD);
-      } else if (response.data.role === Role.WORKER) {
-        router.replace(Routes.WORKER_DASHBOARD);
-      }
-    } catch (error) {
-      setAuthStatus(AuthStatus.UNAUTHENTICATED);
-      const apiError = error as ApiError;
-      Toast.show({
-        type: "error",
-        text1: "OTP Verification Failed",
-        text2: apiError.message,
       });
       throw error;
     } finally {
