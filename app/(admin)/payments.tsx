@@ -2,6 +2,7 @@ import { Badge } from '@/src/components/ui/Badge';
 import { Button } from '@/src/components/ui/Button';
 import { Card } from '@/src/components/ui/Card';
 import { Input } from '@/src/components/ui/Input';
+import { FloatingActionButton } from '@/src/components/ui/FloatingActionButton';
 import { Colors } from '@/constants/Colors';
 import { useStore } from '@/store/mockStore';
 import { Payment } from '@/types';
@@ -105,12 +106,11 @@ export default function PaymentsScreen() {
                 contentContainerStyle={styles.list}
             />
 
-            <TouchableOpacity
-                style={styles.fab}
+            <FloatingActionButton
                 onPress={() => setModalVisible(true)}
-            >
-                <Ionicons name="add" size={30} color="#fff" />
-            </TouchableOpacity>
+                backgroundColor={Colors.success}
+                iconName="add"
+            />
 
             {/* Add Income Modal */}
             <Modal visible={modalVisible} animationType="slide" transparent>
@@ -179,11 +179,6 @@ const styles = StyleSheet.create({
     relatedName: { fontSize: 16, fontWeight: 'bold' },
     date: { fontSize: 12, color: Colors.textSecondary },
     amount: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
-    fab: {
-        position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28,
-        backgroundColor: Colors.success, justifyContent: 'center', alignItems: 'center', // Green for money in
-        elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84,
-    },
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 24 },
     modalContent: { backgroundColor: '#fff', borderRadius: 16, padding: 24 },
     modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },

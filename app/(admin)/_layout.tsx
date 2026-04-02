@@ -21,7 +21,7 @@ export default function AdminLayout() {
     <Tabs
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: Colors.background, borderWidth:2 },
+        headerStyle: { backgroundColor: Colors.background, borderWidth: 2 },
         headerTitleStyle: { color: Colors.primary, fontWeight: "bold" },
         headerRight: () => <Avatar />,
         tabBarActiveTintColor: Colors.success,
@@ -44,6 +44,16 @@ export default function AdminLayout() {
         }}
       />
       <Tabs.Screen
+        name="clients"
+        options={{
+          title: "Clients",
+          headerShown: false, // We will use stack inside
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="people-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="sites"
         options={{
           title: "Sites",
@@ -59,7 +69,7 @@ export default function AdminLayout() {
           title: "Workers",
           headerShown: false, // Stack inside
           tabBarIcon: ({ color }) => (
-            <Ionicons name="people-outline" size={24} color={color} />
+            <Ionicons name="construct-outline" size={24} color={color} />
           ),
         }}
       />

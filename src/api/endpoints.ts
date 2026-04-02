@@ -6,6 +6,13 @@ export const ENDPOINTS = {
     REGISTER: "/auth/register",
     VERIFY: "/auth/verify",
   },
+  CLIENT: {
+    CREATE: "/client",
+    GET_ALL: "/client",
+    GET_BY_ID: "/client/:id",
+    UPDATE: "/client/:id",
+    DELETE: "/client/:id",
+  },
   SITE: {
     CREATE: "/site/create",
     GET_ALL: "/site/get-all",
