@@ -1,199 +1,288 @@
-import { Button } from '@/src/components/ui/Button';
-import { Input } from '@/src/components/ui/Input';
-import { Colors } from '@/constants/Colors';
-import { useStore } from '@/store/mockStore';
-import { Link, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { TextInput } from "@/src/components/input";
+import { Button } from "@/src/components/ui/Button";
+import { useAuth } from "@/src/hooks";
+import { RegisterFormData, registerSchema } from "@/src/schema/auth.schema";
+import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "expo-router";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const ROLE_OPTIONS = [
+  { label: "Contractor", value: "CONTRACTOR" as const },
+  { label: "Worker", value: "WORKER" as const },
+];
 
 export default function RegisterScreen() {
-    const [form, setForm] = useState({
-        name: '',
-        mobile: '',
-        email: '',
-        password: '',
-    });
-    const [showPassword, setShowPassword] = useState(false);
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
-    const [loading, setLoading] = useState(false);
+  const { register, isLoading } = useAuth();
+  const [roleModalVisible, setRoleModalVisible] = useState(false);
 
-    const router = useRouter();
-    const register = useStore(state => state.register);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      mobile: "",
+      email: "",
+      password: "",
+      role: undefined,
+    },
+  });
 
-    const validate = () => {
-        let isValid = true;
-        const newErrors: { [key: string]: string } = {};
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      await register(data);
+    } catch {
+      // Error already handled in useAuth hook with toast
+    }
+  };
 
-        if (!form.name.trim()) {
-            newErrors.name = 'Name is required';
-            isValid = false;
-        }
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-slate-50"
+    >
+      <View className="flex-1 justify-center p-6">
+        <Text className="text-4xl font-bold text-slate-800 text-center mb-2">
+          Create Account
+        </Text>
+        <Text className="text-base text-slate-500 text-center mb-10">
+          Sign up to manage your sites
+        </Text>
 
-        if (!form.mobile) {
-            newErrors.mobile = 'Mobile number is required';
-            isValid = false;
-        } else if (form.mobile.length !== 10) {
-            newErrors.mobile = 'Mobile number must be 10 digits';
-            isValid = false;
-        }
+        <View className="w-full">
+          {/* Name */}
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Full Name"
+                placeholder="Enter full name"
+                leftIcon="person-outline"
+                autoCapitalize="words"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.name?.message as string | undefined}
+              />
+            )}
+          />
 
-        if (!form.email) {
-            newErrors.email = 'Email is required';
-            isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-            newErrors.email = 'Invalid email format';
-            isValid = false;
-        }
+          {/* Mobile */}
+          <Controller
+            control={control}
+            name="mobile"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Mobile Number"
+                placeholder="Enter mobile number"
+                leftIcon="call-outline"
+                numericOnly
+                maxLength={10}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.mobile?.message as string | undefined}
+              />
+            )}
+          />
 
-        if (!form.password) {
-            newErrors.password = 'Password is required';
-            isValid = false;
-        } else if (form.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
-            isValid = false;
-        }
+          {/* Email */}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Email"
+                placeholder="Enter email"
+                keyboardType="email-address"
+                leftIcon="mail"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.email?.message as string | undefined}
+              />
+            )}
+          />
 
-        setErrors(newErrors);
-        return isValid;
-    };
+          {/* Password */}
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Password"
+                placeholder="Create password"
+                leftIcon="lock-closed-outline"
+                isPassword
+                autoCapitalize="none"
+                autoComplete="password"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.password?.message}
+              />
+            )}
+          />
 
-    const handleRegister = async () => {
-        if (!validate()) return;
-
-        setLoading(true);
-        // Simulate API
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const success = register({
-            name: form.name,
-            mobile: form.mobile,
-            email: form.email,
-            role: 'CONTRACTOR' // Default to Contractor
-        }, form.password);
-
-        setLoading(false);
-
-        if (success) {
-            Alert.alert('Success', 'Account created successfully');
-            router.replace('../(admin)/dashboard');
-        } else {
-            Alert.alert('Error', 'Failed to register');
-        }
-    };
-
-    return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.container}
-        >
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Create Account</Text>
-                    <Text style={styles.subtitle}>Sign up to manage your sites</Text>
-                </View>
-
-                <View style={styles.form}>
-                    <Input
-                        label="Full Name"
-                        placeholder="Enter full name"
-                        value={form.name}
-                        onChangeText={(text) => setForm({ ...form, name: text })}
-                        error={errors.name}
+          {/* Role Selector */}
+          <Controller
+            control={control}
+            name="role"
+            render={({ field: { onChange, value } }: any) => (
+              <View className="mb-4">
+                <Text className="text-secondary-600 dark:text-secondary-400 text-sm font-semibold mb-2">
+                  Role
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setRoleModalVisible(true)}
+                  activeOpacity={0.7}
+                  className={`flex-row items-center bg-secondary-50 dark:bg-secondary-800 rounded-2xl px-4 border-2 ${
+                    errors.role
+                      ? "border-error-500"
+                      : "border-secondary-200 dark:border-transparent"
+                  }`}
+                >
+                  <View className="w-10 h-10 items-center justify-center">
+                    <Ionicons
+                      name="briefcase-outline"
+                      size={20}
+                      color={errors.role ? "#ef4444" : "#94a3b8"}
                     />
+                  </View>
+                  <Text
+                    className={`flex-1 py-4 text-base ${
+                      value
+                        ? "text-secondary-900 dark:text-white"
+                        : "text-[#94a3b8]"
+                    }`}
+                  >
+                    {value
+                      ? ROLE_OPTIONS.find((r) => r.value === value)?.label
+                      : "Select your role"}
+                  </Text>
+                  <Ionicons
+                    name="chevron-down"
+                    size={20}
+                    color="#94a3b8"
+                  />
+                </TouchableOpacity>
 
-                    <Input
-                        label="Mobile Number"
-                        placeholder="Enter mobile number"
-                        keyboardType="number-pad"
-                        maxLength={10}
-                        value={form.mobile}
-                        onChangeText={(text) => setForm({ ...form, mobile: text })}
-                        error={errors.mobile}
+                {errors.role && (
+                  <View className="flex-row items-center mt-2">
+                    <Ionicons
+                      name="alert-circle"
+                      size={14}
+                      color="#ef4444"
                     />
+                    <Text className="text-error-500 text-sm ml-1">
+                      {errors.role?.message as string}
+                    </Text>
+                  </View>
+                )}
 
-                    <Input
-                        label="Email"
-                        placeholder="Enter email"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        value={form.email}
-                        onChangeText={(text) => setForm({ ...form, email: text })}
-                        error={errors.email}
-                    />
+                {/* Role Selection Modal */}
+                <Modal
+                  transparent
+                  visible={roleModalVisible}
+                  animationType="fade"
+                  onRequestClose={() => setRoleModalVisible(false)}
+                >
+                  <Pressable
+                    className="flex-1 bg-black/40 justify-end"
+                    onPress={() => setRoleModalVisible(false)}
+                  >
+                    <Pressable
+                      className="bg-white dark:bg-secondary-900 rounded-t-3xl p-6 pb-10"
+                      onPress={(e) => e.stopPropagation()}
+                    >
+                      <Text className="text-lg font-bold text-secondary-900 dark:text-white mb-4">
+                        Select Role
+                      </Text>
 
-                    <Input
-                        label="Password"
-                        placeholder="Create password"
-                        secureTextEntry={!showPassword}
-                        value={form.password}
-                        onChangeText={(text) => setForm({ ...form, password: text })}
-                        error={errors.password}
-                        rightIcon={showPassword ? 'eye-off' : 'eye'}
-                        onRightIconPress={() => setShowPassword(!showPassword)}
-                    />
+                      {ROLE_OPTIONS.map((option) => {
+                        const isSelected = value === option.value;
+                        return (
+                          <TouchableOpacity
+                            key={option.value}
+                            onPress={() => {
+                              onChange(option.value);
+                              setRoleModalVisible(false);
+                            }}
+                            className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${
+                              isSelected
+                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                                : "border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-800"
+                            }`}
+                          >
+                            <Ionicons
+                              name={
+                                option.value === "CONTRACTOR"
+                                  ? "construct-outline"
+                                  : "hammer-outline"
+                              }
+                              size={22}
+                              color={isSelected ? "#3b82f6" : "#94a3b8"}
+                            />
+                            <Text
+                              className={`ml-3 text-base font-medium ${
+                                isSelected
+                                  ? "text-primary-600 dark:text-primary-400"
+                                  : "text-secondary-700 dark:text-secondary-300"
+                              }`}
+                            >
+                              {option.label}
+                            </Text>
+                            {isSelected && (
+                              <View className="ml-auto">
+                                <Ionicons
+                                  name="checkmark-circle"
+                                  size={22}
+                                  color="#3b82f6"
+                                />
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </Pressable>
+                  </Pressable>
+                </Modal>
+              </View>
+            )}
+          />
 
-                    <Button
-                        title="Register"
-                        onPress={handleRegister}
-                        isLoading={loading}
-                        style={styles.button}
-                    />
+          <Button
+            title="Register"
+            onPress={handleSubmit(onSubmit)}
+            isLoading={isLoading}
+          />
 
-                    <View style={styles.footer}>
-                        <Text style={styles.footerText}>Already have an account? </Text>
-                        <Link href="/login" asChild>
-                            <Text style={styles.link}>Login</Text>
-                        </Link>
-                    </View>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
+          <View className="flex-row justify-center mt-6">
+            <Text className="text-slate-500 text-sm">
+              Already have an account?{" "}
+            </Text>
+            <Link href="/login" asChild>
+              <Text className="text-slate-800 text-sm font-bold">Login</Text>
+            </Link>
+          </View>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.background,
-    },
-    scrollContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        padding: 24,
-    },
-    header: {
-        marginBottom: 32,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: Colors.primary,
-        textAlign: 'center',
-        marginBottom: 8,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: Colors.textSecondary,
-        textAlign: 'center',
-    },
-    form: {
-        width: '100%',
-    },
-    button: {
-        marginTop: 16,
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 24,
-    },
-    footerText: {
-        color: Colors.textSecondary,
-        fontSize: 14,
-    },
-    link: {
-        color: Colors.primary,
-        fontSize: 14,
-        fontWeight: 'bold',
-    },
-});
