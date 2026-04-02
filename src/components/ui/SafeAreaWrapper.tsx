@@ -15,6 +15,8 @@ interface SafeAreaWrapperProps {
   scrollable?: boolean;
   /** Custom style passed to SafeAreaView */
   style?: ViewStyle;
+  /** Customize which edges are safe area */
+  edges?: Array<"top" | "right" | "bottom" | "left">;
 }
 
 /**
@@ -38,9 +40,10 @@ export function SafeAreaWrapper({
   className = "flex-1 bg-slate-50",
   scrollable = false,
   style,
+  edges,
 }: SafeAreaWrapperProps) {
   return (
-    <SafeAreaView className={className} style={style}>
+    <SafeAreaView className={className} style={style} edges={edges}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"

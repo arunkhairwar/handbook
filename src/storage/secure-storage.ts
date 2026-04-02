@@ -8,6 +8,7 @@ export const StorageKeys = {
   AUTH_TOKEN: "auth_token",
   REFRESH_TOKEN: "refresh_token",
   USER_ID: "user_id",
+  PAYOUT_DAY: "payout_day",
 } as const;
 
 export type StorageKey = (typeof StorageKeys)[keyof typeof StorageKeys];
