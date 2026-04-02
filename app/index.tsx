@@ -1,9 +1,9 @@
+import { authStatusAtom, userAtom } from "@/src/atoms/auth.atoms";
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import { AuthStatus, Routes } from "@/src/enums";
+import { Role } from "@/src/types";
 import { Redirect } from "expo-router";
 import { useAtomValue } from "jotai";
-import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
-import { authStatusAtom, userAtom } from "@/src/atoms/auth.atoms";
-import { Role } from "@/src/types";
 
 export default function Index() {
   const authStatus = useAtomValue(authStatusAtom);
