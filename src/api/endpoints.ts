@@ -9,9 +9,9 @@ export const ENDPOINTS = {
   CLIENT: {
     CREATE: "/client",
     GET_ALL: "/client",
-    GET_BY_ID: "/client/:id",
-    UPDATE: "/client/:id",
-    DELETE: "/client/:id",
+    GET_BY_ID: (id: string) => `/client/${id}`,
+    UPDATE: (id: string) => `/client/${id}`,
+    DELETE: (id: string) => `/client/${id}`,
   },
   SITE: {
     CREATE: "/site/create",

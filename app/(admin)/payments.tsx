@@ -108,7 +108,7 @@ export default function PaymentsScreen() {
 
             <FloatingActionButton
                 onPress={() => setModalVisible(true)}
-                backgroundColor={Colors.success}
+                variant="success"
                 iconName="add"
             />
 
