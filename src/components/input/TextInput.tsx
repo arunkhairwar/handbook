@@ -99,7 +99,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
         {error && (
           <View className="flex-row items-center mt-2">
             <Ionicons name="alert-circle" size={14} color="#ef4444" />
-            <Text className="text-error-500 text-sm ml-1">{error}</Text>
+            <Text className="text-red-500 text-sm ml-1">{error}</Text>
           </View>
         )}
       </View>
