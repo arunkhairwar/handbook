@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { useClient } from "@/src/hooks/useClient";
+import { AddClientModal } from "@/src/components/clients/AddClientModal";
 import { ClientTile } from "@/src/components/clients/ClientTile";
 import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
-import { AddClientModal } from "@/src/components/clients/AddClientModal";
-import { Colors } from "@/constants/Colors";
+import { EmptyState } from "@/src/components/ui/EmptyState";
+import { FullScreenLoader } from "@/src/components/ui/FullScreenLoader";
+import { useClient } from "@/src/hooks/useClient";
+import React, { useEffect, useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function ClientListScreen() {
   const { clients, isLoading, getAllClients, createClient } = useClient();
@@ -20,7 +15,10 @@ export default function ClientListScreen() {
     getAllClients();
   }, []);
 
-  const handleAddClient = async (clientData: { name: string; mobile: string }) => {
+  const handleAddClient = async (clientData: {
+    name: string;
+    mobile: string;
+  }) => {
     try {
       await createClient(clientData);
       setModalVisible(false);
@@ -31,12 +29,8 @@ export default function ClientListScreen() {
 
   return (
     <View style={styles.container}>
-      {isLoading && clients.length === 0 ? (
-        <ActivityIndicator
-          size="large"
-          color={Colors.primary}
-          style={styles.loader}
-        />
+      {isLoading ? (
+        <FullScreenLoader message="loading clients..." />
       ) : (
         <FlatList
           data={clients}
@@ -44,7 +38,11 @@ export default function ClientListScreen() {
           contentContainerStyle={styles.list}
           renderItem={({ item }) => <ClientTile client={item} />}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>No clients found.</Text>
+            <EmptyState
+              title="No clients found"
+              description="Add a new client to get started."
+              iconName="people-outline"
+            />
           }
         />
       )}
@@ -69,17 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   list: {
     padding: 16,
-  },
-  emptyText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "#666",
+    flexGrow: 1,
   },
 });
