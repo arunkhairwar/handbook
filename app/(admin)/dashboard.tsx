@@ -3,6 +3,7 @@ import { userAtom } from "@/src/atoms/auth.atoms";
 import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
+import { useAuth } from "@/src/hooks";
 import { useStore } from "@/store/mockStore";
 import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
@@ -11,6 +12,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function ContractorDashboard() {
   const { sites, payments, expenses } = useStore();
+  const { logout } = useAuth();
   const user = useAtomValue(userAtom);
   const router = useRouter();
 
@@ -102,7 +104,7 @@ export default function ContractorDashboard() {
       <Button
         title="Logout"
         variant="danger"
-        onPress={() => router.replace("../(auth)/login")}
+        onPress={logout}
         style={{ marginTop: 20 }}
       />
     </ScrollView>

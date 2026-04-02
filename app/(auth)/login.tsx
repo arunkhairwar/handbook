@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
+import { Text, View } from "react-native";
 
 export default function LoginScreen() {
   // const [showPassword, setShowPassword] = useState(false);
@@ -34,10 +35,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-slate-50"
-    >
+    <SafeAreaWrapper>
       <View className="flex-1 justify-center p-6">
         <Text className="text-4xl font-bold text-slate-800 text-center mb-2">
           SiteKhata
@@ -100,6 +98,6 @@ export default function LoginScreen() {
           </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </SafeAreaWrapper>
   );
 }

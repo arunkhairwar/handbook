@@ -1,30 +1,30 @@
 import { TextInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
+import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
+import { ValuePicker } from "@/src/components/ui/ValuePickerModal";
 import { useAuth } from "@/src/hooks";
 import { RegisterFormData, registerSchema } from "@/src/schema/auth.schema";
-import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, View } from "react-native";
 
 const ROLE_OPTIONS = [
-  { label: "Contractor", value: "CONTRACTOR" as const },
-  { label: "Worker", value: "WORKER" as const },
+  {
+    label: "Contractor",
+    value: "CONTRACTOR" as const,
+    icon: "construct-outline" as const,
+  },
+  {
+    label: "Worker",
+    value: "WORKER" as const,
+    icon: "hammer-outline" as const,
+  },
 ];
 
 export default function RegisterScreen() {
   const { register, isLoading } = useAuth();
-  const [roleModalVisible, setRoleModalVisible] = useState(false);
 
   const {
     control,
@@ -43,6 +43,7 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
+
     try {
       await register(data);
     } catch {
@@ -51,10 +52,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-slate-50"
-    >
+    <SafeAreaWrapper scrollable>
       <View className="flex-1 justify-center p-6">
         <Text className="text-4xl font-bold text-slate-800 text-center mb-2">
           Create Account
@@ -100,6 +98,24 @@ export default function RegisterScreen() {
               />
             )}
           />
+          {/* Role Selector */}
+          <Controller
+            control={control}
+            name="role"
+            render={({ field: { onChange, value } }: any) => (
+              <ValuePicker
+                label="Role"
+                required
+                placeholder="Select your role"
+                leftIcon="briefcase-outline"
+                options={ROLE_OPTIONS}
+                selectedValue={value}
+                onSelect={onChange}
+                title="Select Role"
+                error={errors.role?.message as string | undefined}
+              />
+            )}
+          />
 
           {/* Email */}
           <Controller
@@ -140,133 +156,6 @@ export default function RegisterScreen() {
             )}
           />
 
-          {/* Role Selector */}
-          <Controller
-            control={control}
-            name="role"
-            render={({ field: { onChange, value } }: any) => (
-              <View className="mb-4">
-                <Text className="text-secondary-600 dark:text-secondary-400 text-sm font-semibold mb-2">
-                  Role
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setRoleModalVisible(true)}
-                  activeOpacity={0.7}
-                  className={`flex-row items-center bg-secondary-50 dark:bg-secondary-800 rounded-2xl px-4 border-2 ${
-                    errors.role
-                      ? "border-error-500"
-                      : "border-secondary-200 dark:border-transparent"
-                  }`}
-                >
-                  <View className="w-10 h-10 items-center justify-center">
-                    <Ionicons
-                      name="briefcase-outline"
-                      size={20}
-                      color={errors.role ? "#ef4444" : "#94a3b8"}
-                    />
-                  </View>
-                  <Text
-                    className={`flex-1 py-4 text-base ${
-                      value
-                        ? "text-secondary-900 dark:text-white"
-                        : "text-[#94a3b8]"
-                    }`}
-                  >
-                    {value
-                      ? ROLE_OPTIONS.find((r) => r.value === value)?.label
-                      : "Select your role"}
-                  </Text>
-                  <Ionicons
-                    name="chevron-down"
-                    size={20}
-                    color="#94a3b8"
-                  />
-                </TouchableOpacity>
-
-                {errors.role && (
-                  <View className="flex-row items-center mt-2">
-                    <Ionicons
-                      name="alert-circle"
-                      size={14}
-                      color="#ef4444"
-                    />
-                    <Text className="text-error-500 text-sm ml-1">
-                      {errors.role?.message as string}
-                    </Text>
-                  </View>
-                )}
-
-                {/* Role Selection Modal */}
-                <Modal
-                  transparent
-                  visible={roleModalVisible}
-                  animationType="fade"
-                  onRequestClose={() => setRoleModalVisible(false)}
-                >
-                  <Pressable
-                    className="flex-1 bg-black/40 justify-end"
-                    onPress={() => setRoleModalVisible(false)}
-                  >
-                    <Pressable
-                      className="bg-white dark:bg-secondary-900 rounded-t-3xl p-6 pb-10"
-                      onPress={(e) => e.stopPropagation()}
-                    >
-                      <Text className="text-lg font-bold text-secondary-900 dark:text-white mb-4">
-                        Select Role
-                      </Text>
-
-                      {ROLE_OPTIONS.map((option) => {
-                        const isSelected = value === option.value;
-                        return (
-                          <TouchableOpacity
-                            key={option.value}
-                            onPress={() => {
-                              onChange(option.value);
-                              setRoleModalVisible(false);
-                            }}
-                            className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${
-                              isSelected
-                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                                : "border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-800"
-                            }`}
-                          >
-                            <Ionicons
-                              name={
-                                option.value === "CONTRACTOR"
-                                  ? "construct-outline"
-                                  : "hammer-outline"
-                              }
-                              size={22}
-                              color={isSelected ? "#3b82f6" : "#94a3b8"}
-                            />
-                            <Text
-                              className={`ml-3 text-base font-medium ${
-                                isSelected
-                                  ? "text-primary-600 dark:text-primary-400"
-                                  : "text-secondary-700 dark:text-secondary-300"
-                              }`}
-                            >
-                              {option.label}
-                            </Text>
-                            {isSelected && (
-                              <View className="ml-auto">
-                                <Ionicons
-                                  name="checkmark-circle"
-                                  size={22}
-                                  color="#3b82f6"
-                                />
-                              </View>
-                            )}
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </Pressable>
-                  </Pressable>
-                </Modal>
-              </View>
-            )}
-          />
-
           <Button
             title="Register"
             onPress={handleSubmit(onSubmit)}
@@ -283,6 +172,6 @@ export default function RegisterScreen() {
           </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </SafeAreaWrapper>
   );
 }

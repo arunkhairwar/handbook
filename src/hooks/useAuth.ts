@@ -115,6 +115,7 @@ export function useAuth(): UseAuthReturn {
       router.replace(Routes.LOGIN);
     } catch (error) {
       const apiError = error as ApiError;
+      console.log("============Error============", apiError);
       Toast.show({
         type: "error",
         text1: "Registration Failed",
