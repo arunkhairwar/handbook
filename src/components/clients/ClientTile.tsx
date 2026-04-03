@@ -14,30 +14,30 @@ export const ClientTile: React.FC<ClientTileProps> = ({ client }) => {
 
   return (
     <Card
-      className="mb-3 flex-row items-center"
-      style={{
-        backgroundColor: tileColors.background,
-        borderColor: tileColors.border,
-        borderLeftWidth: 4,
-        borderLeftColor: tileColors.icon,
-      }}
+      className="mb-3 dark:bg-slate-800 dark:border-slate-700"
+      style={{ borderLeftWidth: 4, borderLeftColor: tileColors.icon }}
     >
-      <View
-        className="mr-4 rounded-full p-3 items-center justify-center"
-        style={{ backgroundColor: "white" }}
-      >
-        <Ionicons name="person-outline" size={24} color={tileColors.icon} />
-      </View>
-      <View className="flex-1 justify-center">
-        <Text className="text-lg font-bold" style={{ color: tileColors.text }}>
-          {client.name}
-        </Text>
-        <Text
-          className="text-sm mt-1 font-medium"
-          style={{ color: tileColors.icon }}
+      <View className="flex-row items-center">
+        <View
+          className="w-11 h-11 rounded-full items-center justify-center mr-3.5 dark:bg-blue-900/30"
+          style={{ backgroundColor: tileColors.background }}
         >
-          {client.mobile}
-        </Text>
+          <Ionicons name="person-outline" size={22} color={tileColors.icon} />
+        </View>
+        <View className="flex-1 justify-center">
+          <Text
+            className="text-base font-bold dark:text-blue-300"
+            style={{ color: tileColors.text }}
+          > 
+            {client.name}
+          </Text>
+          <Text
+            className="text-sm mt-0.5 font-medium dark:text-blue-400/70"
+            style={{ color: tileColors.icon }}
+          >
+            {client.mobile}
+          </Text>
+        </View>
       </View>
     </Card>
   );

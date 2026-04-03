@@ -81,6 +81,7 @@ export function AddClientModal({
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 label="Mobile Number"
+                maxLength={10}
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
