@@ -4,7 +4,7 @@
     "slug": "siteKhata",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logo3.png",
     "scheme": "sitekhata",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -14,16 +14,16 @@
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/logo.png",
-        "backgroundImage": "./assets/images/logo.png",
-        "monochromeImage": "./assets/images/logo.png"
+        "foregroundImage": "./assets/images/logo3.png",
+        "backgroundImage": "./assets/images/logo3.png",
+        "monochromeImage": "./assets/images/logo3.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/logo.png",
+      "favicon": "./assets/images/logo3.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -31,7 +31,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo.png",
+          "image": "./assets/images/logo3.png",
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
           "dark": {
