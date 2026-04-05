@@ -1,8 +1,9 @@
 import { Colors } from "@/constants/Colors";
+import ProfilePicture from "@/src/components/ui/ProfilePicture";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -13,15 +14,27 @@ export default function ProfileScreen() {
     role: "Super Admin",
     number: "+91 9876543210",
     email: "admin@sitekhata.com",
-    avatar: "https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff&size=200",
+    avatar:
+      "https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff&size=200",
+  };
+
+  const [avatarUri, setAvatarUri] = useState<string | null>(
+    adminProfile.avatar,
+  );
+
+  const handleImageChange = (uri: string) => {
+    setAvatarUri(uri);
+    // TODO: upload the image to your server and update the profile
   };
 
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="items-center py-10 border-b border-gray-100 bg-blue-50/30">
-        <Image
-          source={{ uri: adminProfile.avatar }}
-          className="w-32 h-32 rounded-full border-4 border-white shadow-sm"
+        <ProfilePicture
+          imageUri={avatarUri}
+          name={adminProfile.name}
+          size={128}
+          onImageChange={handleImageChange}
         />
         <Text className="text-2xl font-bold mt-4 text-gray-800">
           {adminProfile.name}

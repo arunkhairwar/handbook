@@ -11,3 +11,9 @@ export type ValidationError = {
   field: string;
   message: string;
 };
+
+export type ApiResponse<T> = {
+  data: T;
+  message: string;
+  success: string;
+};
