@@ -1,9 +1,14 @@
 import { Colors } from "@/constants/Colors";
+import { userAtom } from "@/src/atoms/auth.atoms";
+import { Badge } from "@/src/components/ui/Badge";
+import { Button } from "@/src/components/ui/Button";
 import ProfilePicture from "@/src/components/ui/ProfilePicture";
+import { useAuth } from "@/src/hooks";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useAtomValue } from "jotai";
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -15,8 +20,10 @@ export default function ProfileScreen() {
     number: "+91 9876543210",
     email: "admin@sitekhata.com",
   };
+  const user = useAtomValue(userAtom);
 
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   const handleImageChange = (uri: string) => {
     setAvatarUri(uri);
@@ -32,15 +39,17 @@ export default function ProfileScreen() {
           size={128}
           onImageChange={handleImageChange}
         />
-        <Text className="text-2xl font-bold mt-4 text-gray-800">
-          {adminProfile.name}
-        </Text>
-        <Text
-          className="text-lg font-medium mt-1"
-          style={{ color: Colors.primary }}
-        >
-          {adminProfile.role}
-        </Text>
+        <View className="flex-col items-center gap-2">
+          <Text className="text-2xl font-bold mt-4 text-gray-800">
+            {user?.name}
+          </Text>
+          <Badge
+            title={user?.role}
+            variant="success"
+            textTransform="uppercase"
+            // style={{ marginTop: 8 }}
+          />
+        </View>
       </View>
 
       <View className="px-6 py-8">
@@ -55,7 +64,7 @@ export default function ProfileScreen() {
           <View>
             <Text className="text-sm text-gray-500 mb-1">Mobile Number</Text>
             <Text className="text-base text-gray-800 font-medium">
-              {adminProfile.number}
+              {user?.mobile}
             </Text>
           </View>
         </View>
@@ -67,22 +76,11 @@ export default function ProfileScreen() {
           <View>
             <Text className="text-sm text-gray-500 mb-1">Email Address</Text>
             <Text className="text-base text-gray-800 font-medium">
-              {adminProfile.email}
+              {user?.email}
             </Text>
           </View>
         </View>
-
-        <TouchableOpacity
-          className="flex-row items-center justify-center py-4 rounded-xl mt-4"
-          style={{ backgroundColor: "#fee2e2" }}
-          onPress={() => {
-            // Mock logout or just go back for now
-            router.back();
-          }}
-        >
-          <Ionicons name="log-out-outline" size={20} color="#ef4444" />
-          <Text className="text-red-500 font-bold ml-2 text-base">Logout</Text>
-        </TouchableOpacity>
+        <Button onPress={logout} title="Logout" variant="danger" />
       </View>
     </ScrollView>
   );
