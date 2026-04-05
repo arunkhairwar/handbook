@@ -14,13 +14,9 @@ export default function ProfileScreen() {
     role: "Super Admin",
     number: "+91 9876543210",
     email: "admin@sitekhata.com",
-    avatar:
-      "https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff&size=200",
   };
 
-  const [avatarUri, setAvatarUri] = useState<string | null>(
-    adminProfile.avatar,
-  );
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
 
   const handleImageChange = (uri: string) => {
     setAvatarUri(uri);

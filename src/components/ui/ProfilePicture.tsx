@@ -13,14 +13,12 @@ const AVATAR_COLORS = [
   "#F97316", // Orange
   "#F59E0B", // Amber
   "#84CC16", // Lime
-  "#22C55E", // Green
   "#14B8A6", // Teal
   "#06B6D4", // Cyan
   "#3B82F6", // Blue
   "#6366F1", // Indigo
   "#8B5CF6", // Violet
-  "#A855F7", // Purple
-  "#EC4899", // Pink
+
   "#D946EF", // Fuchsia
   "#0EA5E9", // Sky
   "#10B981", // Emerald
@@ -126,8 +124,6 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
             width: size,
             height: size,
             borderRadius: size / 2,
-            borderWidth: 1,
-            borderColor: "#EF4444",
             overflow: "hidden",
             alignItems: "center",
             justifyContent: "center",
