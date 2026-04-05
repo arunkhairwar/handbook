@@ -82,6 +82,13 @@ export default function AdminLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          href: null,
+          title: "Profile",
+        }}
+      />
     </Tabs>
   );
 }

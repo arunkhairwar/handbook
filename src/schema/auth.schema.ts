@@ -3,7 +3,8 @@ import { z } from "zod";
 export const phoneValidation = z
   .string()
   .min(1, "Phone number is required")
-  .regex(/^[6-9]\d{9}$/, "Invalid Indian phone number");
+  .startsWith("+91", "Country code is required (e.g., +91)")
+  .regex(/^\+91[6-9]\d{9}$/, "Invalid phone number (must be 10 digits)");
 
 export const emailValidation = z
   .string()

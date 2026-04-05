@@ -1,11 +1,11 @@
 import { AddClientModal } from "@/src/components/clients/AddClientModal";
 import { ClientTile } from "@/src/components/clients/ClientTile";
-import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
 import { EmptyState } from "@/src/components/ui/EmptyState";
+import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
 import { FullScreenLoader } from "@/src/components/ui/FullScreenLoader";
 import { useClient } from "@/src/hooks/useClient";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 export default function ClientListScreen() {
   const { clients, isLoading, getAllClients, createClient } = useClient();

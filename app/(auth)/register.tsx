@@ -1,4 +1,4 @@
-import { TextInput } from "@/src/components/input";
+import { TextInput, PhoneInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
 import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
 import { ValuePicker } from "@/src/components/ui/ValuePickerModal";
@@ -43,7 +43,6 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-
     try {
       await register(data);
     } catch {
@@ -68,6 +67,7 @@ export default function RegisterScreen() {
             name="name"
             render={({ field: { onChange, onBlur, value } }: any) => (
               <TextInput
+                required
                 label="Full Name"
                 placeholder="Enter full name"
                 leftIcon="person-outline"
@@ -85,11 +85,11 @@ export default function RegisterScreen() {
             control={control}
             name="mobile"
             render={({ field: { onChange, onBlur, value } }: any) => (
-              <TextInput
+              <PhoneInput
                 label="Mobile Number"
+                required
+                disableCountrySelection
                 placeholder="Enter mobile number"
-                leftIcon="call-outline"
-                numericOnly
                 maxLength={10}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -123,6 +123,7 @@ export default function RegisterScreen() {
             name="email"
             render={({ field: { onChange, onBlur, value } }: any) => (
               <TextInput
+                required
                 label="Email"
                 placeholder="Enter email"
                 keyboardType="email-address"
@@ -142,6 +143,7 @@ export default function RegisterScreen() {
             name="password"
             render={({ field: { onChange, onBlur, value } }: any) => (
               <TextInput
+                required
                 label="Password"
                 placeholder="Create password"
                 leftIcon="lock-closed-outline"

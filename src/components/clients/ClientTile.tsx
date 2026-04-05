@@ -15,7 +15,7 @@ export const ClientTile: React.FC<ClientTileProps> = ({ client }) => {
   return (
     <Card
       className="mb-3 dark:bg-slate-800 dark:border-slate-700"
-      style={{ borderLeftWidth: 4, borderLeftColor: tileColors.icon }}
+      // style={{ borderLeftWidth: 4 }}
     >
       <View className="flex-row items-center">
         <View
@@ -28,7 +28,7 @@ export const ClientTile: React.FC<ClientTileProps> = ({ client }) => {
           <Text
             className="text-base font-bold dark:text-blue-300"
             style={{ color: tileColors.text }}
-          > 
+          >
             {client.name}
           </Text>
           <Text

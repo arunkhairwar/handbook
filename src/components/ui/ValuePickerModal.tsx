@@ -1,11 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Modal,
   Pressable,
   Text,
   TouchableOpacity,
   View,
+  TextInput,
+  ScrollView,
 } from "react-native";
 
 export interface PickerOption {
@@ -22,6 +24,7 @@ interface ValuePickerModalProps {
   selectedValue?: string;
   onSelect: (value: string) => void;
   title?: string;
+  searchable?: boolean;
 }
 
 interface ValuePickerProps {
@@ -35,6 +38,7 @@ interface ValuePickerProps {
   placeholder?: string;
   leftIcon?: keyof typeof Ionicons.glyphMap;
   className?: string;
+  searchable?: boolean;
 }
 
 export function ValuePickerModal({
@@ -44,7 +48,17 @@ export function ValuePickerModal({
   selectedValue,
   onSelect,
   title = "Select an option",
+  searchable = false,
 }: ValuePickerModalProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchQuery) return options;
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [options, searchable, searchQuery]);
+
   return (
     <Modal
       transparent
@@ -57,69 +71,98 @@ export function ValuePickerModal({
         onPress={onClose}
       >
         <Pressable
-          className="bg-white dark:bg-secondary-900 rounded-t-3xl p-6 pb-10"
+          className="bg-white dark:bg-secondary-900 rounded-t-3xl p-6 pb-10 max-h-[80%]"
           onPress={(e) => e.stopPropagation()}
         >
           <Text className="text-lg font-bold text-secondary-900 dark:text-white mb-4">
             {title}
           </Text>
 
-          {options.map((option) => {
-            const isSelected = selectedValue === option.value;
-            return (
-              <TouchableOpacity
-                key={option.value}
-                onPress={() => {
-                  onSelect(option.value);
-                  onClose();
-                }}
-                className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${
-                  isSelected
-                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
-                    : "border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-800"
-                }`}
-              >
-                {option.icon && (
-                  <Ionicons
-                    name={option.icon}
-                    size={22}
-                    color={isSelected ? "#3b82f6" : "#94a3b8"}
-                  />
-                )}
-                <View className={`flex-1 ${option.icon ? "ml-3" : ""}`}>
-                  <Text
-                    className={`text-base font-medium ${
-                      isSelected
-                        ? "text-primary-600 dark:text-primary-400"
-                        : "text-secondary-700 dark:text-secondary-300"
-                    }`}
-                  >
-                    {option.label}
-                  </Text>
-                  {option.description && (
+          {searchable && (
+            <View className="mb-4 flex-row items-center bg-secondary-50 dark:bg-secondary-800 rounded-xl px-4 border border-secondary-200 dark:border-secondary-700">
+              <Ionicons name="search" size={20} color="#94a3b8" />
+              <TextInput
+                className="flex-1 py-3 px-3 text-base text-secondary-900 dark:text-white"
+                placeholder="Search..."
+                placeholderTextColor="#94a3b8"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery("")}>
+                  <Ionicons name="close-circle" size={20} color="#94a3b8" />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+
+          <ScrollView 
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {filteredOptions.length === 0 && (
+              <Text className="text-center text-secondary-500 py-4">
+                No options found
+              </Text>
+            )}
+            
+            {filteredOptions.map((option) => {
+              const isSelected = selectedValue === option.value;
+              return (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => {
+                    onSelect(option.value);
+                    onClose();
+                  }}
+                  className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${
+                    isSelected
+                      ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                      : "border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-800"
+                  }`}
+                >
+                  {option.icon && (
+                    <Ionicons
+                      name={option.icon}
+                      size={22}
+                      color={isSelected ? "#3b82f6" : "#94a3b8"}
+                    />
+                  )}
+                  <View className={`flex-1 ${option.icon ? "ml-3" : ""}`}>
                     <Text
-                      className={`text-sm mt-0.5 ${
+                      className={`text-base font-medium ${
                         isSelected
-                          ? "text-primary-500/70 dark:text-primary-400/70"
-                          : "text-secondary-500 dark:text-secondary-400"
+                          ? "text-primary-600 dark:text-primary-400"
+                          : "text-secondary-700 dark:text-secondary-300"
                       }`}
                     >
-                      {option.description}
+                      {option.label}
                     </Text>
-                  )}
-                </View>
-                {isSelected && (
-                  <View className="ml-auto">
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={22}
-                      color="#3b82f6"
-                    />
+                    {option.description && (
+                      <Text
+                        className={`text-sm mt-0.5 ${
+                          isSelected
+                            ? "text-primary-500/70 dark:text-primary-400/70"
+                            : "text-secondary-500 dark:text-secondary-400"
+                        }`}
+                      >
+                        {option.description}
+                      </Text>
+                    )}
                   </View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
+                  {isSelected && (
+                    <View className="ml-auto">
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={22}
+                        color="#3b82f6"
+                      />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>
@@ -137,6 +180,7 @@ export function ValuePicker({
   placeholder = "Select an option",
   leftIcon = "briefcase-outline",
   className,
+  searchable = false,
 }: ValuePickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -193,6 +237,7 @@ export function ValuePicker({
         selectedValue={selectedValue}
         onSelect={onSelect}
         title={title}
+        searchable={searchable}
       />
     </View>
   );

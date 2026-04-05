@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://192.168.1.44:3000/api";
+export const API_BASE_URL = "http://192.168.1.45:3000/api";
 
 export const ENDPOINTS = {
   AUTH: {
@@ -14,18 +14,18 @@ export const ENDPOINTS = {
     DELETE: (id: string) => `/client/${id}`,
   },
   SITE: {
-    CREATE: "/site/create",
-    GET_ALL: "/site/get-all",
-    GET_BY_ID: "/site/get-by-id",
-    UPDATE: "/site/update",
-    DELETE: "/site/delete",
+    CREATE: "/site",
+    GET_ALL: "/site",
+    GET_BY_ID: (id: string) => `/site/${id}`,
+    UPDATE: (id: string) => `/site/${id}`,
+    DELETE: (id: string) => `/site/${id}`,
   },
   WORKER: {
-    CREATE: "/worker/create",
-    GET_ALL: "/worker/get-all",
-    GET_BY_ID: "/worker/get-by-id",
-    UPDATE: "/worker/update",
-    DELETE: "/worker/delete",
+    CREATE: "/worker",
+    GET_ALL: "/worker",
+    GET_BY_ID: (id: string) => `/worker/${id}`,
+    UPDATE: (id: string) => `/worker/${id}`,
+    DELETE: (id: string) => `/worker/${id}`,
   },
 };
 
