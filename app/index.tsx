@@ -1,6 +1,7 @@
 import { authStatusAtom, userAtom } from "@/src/atoms/auth.atoms";
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
-import { AuthStatus, Routes } from "@/src/enums";
+import { AuthStatus } from "@/src/enums";
+import { AppRoutes } from "@/src/routes/app.routes";
 import { Role } from "@/src/types";
 import { Redirect } from "expo-router";
 import { useAtomValue } from "jotai";
@@ -17,10 +18,10 @@ export default function Index() {
   // Redirect based on auth status and role
   if (authStatus === AuthStatus.AUTHENTICATED && user) {
     if (user.role === Role.WORKER) {
-      return <Redirect href={Routes.WORKER_DASHBOARD} />;
+      return <Redirect href={AppRoutes.WORKER.DASHBOARD} />;
     }
-    return <Redirect href={Routes.ADMIN_DASHBOARD} />;
+    return <Redirect href={AppRoutes.ADMIN.DASHBOARD} />;
   }
 
-  return <Redirect href={Routes.LOGIN} />;
+  return <Redirect href={AppRoutes.AUTH.LOGIN} />;
 }

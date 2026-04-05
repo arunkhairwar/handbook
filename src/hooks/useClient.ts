@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { useAtom } from 'jotai';
-import { clientAtom } from '../atoms/client.atoms';
-import { clientService, CreateClientData, UpdateClientData } from '../services/client.service';
-import Toast from 'react-native-toast-message';
+import { useState } from "react";
+import { useAtom } from "jotai";
+import { clientAtom } from "../atoms/client.atoms";
+import {
+  clientService,
+  CreateClientData,
+  UpdateClientData,
+} from "../services/client.service";
+import Toast from "react-native-toast-message";
 
 export const useClient = () => {
   const [clients, setClients] = useAtom(clientAtom);
@@ -16,11 +20,11 @@ export const useClient = () => {
       setClients(data);
       return data;
     } catch (error: any) {
-      console.error('Error fetching clients:', error);
+      console.error("Error fetching clients:", error);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to fetch clients',
+        type: "error",
+        text1: "Error",
+        text2: error?.message || "Failed to fetch clients",
       });
     } finally {
       setIsLoading(false);
@@ -34,11 +38,11 @@ export const useClient = () => {
       await getAllClients();
       return response;
     } catch (error: any) {
-      console.error('Error creating client:', error);
+      console.error("Error creating client:", error);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to create client',
+        type: "error",
+        text1: "Error",
+        text2: error?.message || "Failed to create client",
       });
       throw error;
     } finally {
@@ -53,11 +57,11 @@ export const useClient = () => {
       await getAllClients();
       return response;
     } catch (error: any) {
-      console.error('Error updating client:', error);
+      console.error("Error updating client:", error);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to update client',
+        type: "error",
+        text1: "Error",
+        text2: error?.response?.data?.message || "Failed to update client",
       });
       throw error;
     } finally {
@@ -72,11 +76,11 @@ export const useClient = () => {
       await getAllClients();
       return response;
     } catch (error: any) {
-      console.error('Error deleting client:', error);
+      console.error("Error deleting client:", error);
       Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to delete client',
+        type: "error",
+        text1: "Error",
+        text2: error?.response?.data?.message || "Failed to delete client",
       });
       throw error;
     } finally {

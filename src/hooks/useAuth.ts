@@ -9,7 +9,10 @@ import {
   tokenAtom,
   userAtom,
 } from "../atoms/auth.atoms";
+import { AuthStatus } from "../enums";
+import { AppRoutes } from "../routes/app.routes";
 import { LoginFormData, RegisterFormData } from "../schema/auth.schema";
+import { authService } from "../services/auth.service";
 import {
   clearAuthStorage,
   getSecureValue,
@@ -17,8 +20,6 @@ import {
   StorageKeys,
 } from "../storage/secure-storage";
 import { ApiError } from "../types";
-import { authService } from "../services/auth.service";
-import { AuthStatus, Routes } from "../enums";
 
 type UseAuthReturn = {
   isLoading: boolean;
@@ -143,7 +144,7 @@ export function useAuth(): UseAuthReturn {
         text2: "Please verify your phone number",
       });
 
-      router.replace(Routes.LOGIN);
+      router.replace(AppRoutes.AUTH.LOGIN);
     } catch (error) {
       const apiError = error as ApiError;
 
@@ -177,7 +178,7 @@ export function useAuth(): UseAuthReturn {
         text2: "You have been successfully logged out",
       });
 
-      router.replace(Routes.LOGIN);
+      router.replace(AppRoutes.AUTH.LOGIN);
     } catch (error) {
       Toast.show({
         type: "error",

@@ -1,8 +1,7 @@
+import { z } from "zod";
 import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
-import { z } from "zod";
 import { createSiteSchema } from "../schema/sites.schema";
-import { Site } from "../../types";
 
 export type CreateSiteData = z.infer<typeof createSiteSchema>;
 export type UpdateSiteData = Partial<CreateSiteData>;

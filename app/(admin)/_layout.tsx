@@ -1,24 +1,11 @@
 import { Colors } from "@/constants/Colors";
 import Avatar from "@/src/components/ui/Avatar";
-import { Button } from "@/src/components/ui/Button";
+import BackButton from "@/src/components/ui/BackButton";
 import { Ionicons } from "@expo/vector-icons";
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import React from "react";
-import { Pressable, View } from "react-native";
 
 export default function AdminLayout() {
-  const getHeaderTitle = (route: string) => {
-    switch (route) {
-      case "dashboard":
-        return "Dashboard";
-      case "sites":
-        return "Sites";
-      case "workers":
-        return "Workers";
-      default:
-        return "App";
-    }
-  };
   return (
     <Tabs
       screenOptions={{
@@ -90,17 +77,7 @@ export default function AdminLayout() {
           href: null,
           title: "Profile",
           headerShown: true,
-          headerLeft: () => {
-            return (
-              <Pressable onPress={() => router.back()} className="ml-6 mr-2">
-                <Ionicons
-                  name="arrow-back-outline"
-                  size={24}
-                  color={Colors.primary}
-                />
-              </Pressable>
-            );
-          },
+          headerLeft: () => <BackButton />,
           headerRight: () => null,
         }}
       />

@@ -47,8 +47,12 @@ export function AddSiteModal({
   const onSubmit = async (data: SiteFormValues) => {
     // Clean up address if it's completely empty to match optional schema
     const cleanData = { ...data };
-    const hasAddressInput = data.address && Object.values(data.address).some(val => val !== "" && val !== undefined);
-    
+    const hasAddressInput =
+      data.address &&
+      Object.values(data.address).some(
+        (val) => val !== "" && val !== undefined,
+      );
+
     if (!hasAddressInput) {
       delete cleanData.address;
     }
@@ -69,7 +73,7 @@ export function AddSiteModal({
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View className="flex-1 bg-black/50 justify-center p-6">
-        <View className="bg-white rounded-2xl p-6" style={{ maxHeight: '85%' }}>
+        <View className="bg-white rounded-2xl p-6" style={{ maxHeight: "85%" }}>
           <Text
             className="text-xl font-bold mb-4"
             style={{ color: Colors.primary }}
@@ -108,7 +112,9 @@ export function AddSiteModal({
               )}
             />
 
-            <Text className="text-lg font-semibold mt-2 mb-4 text-gray-700">Address Details (Optional)</Text>
+            <Text className="text-lg font-semibold mt-2 mb-4 text-gray-700">
+              Address Details (Optional)
+            </Text>
 
             <Controller
               control={control}
