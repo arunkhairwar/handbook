@@ -5,7 +5,7 @@ import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
 import { FullScreenLoader } from "@/src/components/ui/FullScreenLoader";
 import { useClient } from "@/src/hooks/useClient";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 
 export default function ClientListScreen() {
   const { clients, isLoading, getAllClients, createClient } = useClient();
@@ -37,6 +37,9 @@ export default function ClientListScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => <ClientTile client={item} />}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={getAllClients} />
+          }
           ListEmptyComponent={
             <EmptyState
               title="No clients found"
