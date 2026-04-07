@@ -4,6 +4,9 @@ export type Site = {
   image?: string;
   clientId?: string;
   addressId?: string;
+  estimatedBudget?: number;
+  startDate?: string;
+  expectedEndDate?: string;
   client?: {
     id: string;
     name: string;

@@ -1,8 +1,12 @@
 import { Colors } from "@/constants/Colors";
 import { TextInput } from "@/src/components/input/TextInput";
 import { Button } from "@/src/components/ui/Button";
+import { Divider } from "@/src/components/ui/Divider";
 import { SelectClient } from "@/src/components/ui/SelectClient";
+import { DateTimePicker } from "@/src/components/ui/DateTimePicker";
+import { FontAwesome } from "@expo/vector-icons";
 import { useSite } from "@/src/hooks/useSite";
+import moment from "moment";
 import { createSiteSchema } from "@/src/schema/sites.schema";
 import { CreateSiteData } from "@/src/services/site.service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +37,9 @@ export default function AddSiteScreen() {
     defaultValues: {
       name: "",
       client: "",
+      estimatedBudget: 0,
+      startDate: new Date(),
+      expectedEndDate: new Date(),
       address: {
         addressLine1: "",
         addressLine2: "",
@@ -119,13 +126,61 @@ export default function AddSiteScreen() {
             />
           )}
         />
-
-        {/* Divider */}
-        <View
-          className="my-4"
-          style={{ height: 1, backgroundColor: Colors.border }}
+        <Controller
+          control={control}
+          name="estimatedBudget"
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              label="Estimated Budget (अनुमानित लागत)"
+              numericOnly
+              placeholder="0"
+              value={value ? value.toString() : ""}
+              onChangeText={(val) => onChange(val ? Number(val) : undefined)}
+              error={errors.estimatedBudget?.message}
+              leftElement={
+                <View className="w-10 h-10 items-center justify-center">
+                  <FontAwesome name="rupee" size={20} color="#94a3b8" />
+                </View>
+              }
+            />
+          )}
         />
 
+        <View className="flex-row gap-3">
+          <View className="flex-1">
+            <Controller
+              control={control}
+              name="startDate"
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  label="Start Date"
+                  value={value}
+                  onChange={(date) => onChange(date)}
+                  onlyDate
+                  error={errors.startDate?.message}
+                />
+              )}
+            />
+          </View>
+          <View className="flex-1">
+            <Controller
+              control={control}
+              name="expectedEndDate"
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  label="Expected End"
+                  value={value}
+                  onChange={(date) => onChange(date)}
+                  onlyDate
+                  error={errors.expectedEndDate?.message}
+                />
+              )}
+            />
+          </View>
+        </View>
+
+        {/* Divider */}
+        <Divider />
         {/* Address Section */}
         <Text
           className="text-base font-semibold mb-3"

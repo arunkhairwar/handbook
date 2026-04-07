@@ -11,7 +11,7 @@ import {
 type TextInputProps = RNTextInputProps & {
   label?: string;
   error?: string;
-  leftIcon?: keyof typeof Ionicons.glyphMap;
+  leftIcon?: keyof typeof Ionicons.glyphMap ;
   leftElement?: React.ReactNode;
   isPassword?: boolean;
   numericOnly?: boolean;
