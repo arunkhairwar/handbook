@@ -115,7 +115,7 @@ export function ValuePickerModal({
                     onSelect(option.value);
                     onClose();
                   }}
-                  className={`flex-row items-center p-4 rounded-xl mb-2 border-2 ${
+                  className={`flex-row items-center p-4 rounded-xl mb-2 border ${
                     isSelected
                       ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
                       : "border-secondary-200 dark:border-secondary-700 bg-secondary-50 dark:bg-secondary-800"

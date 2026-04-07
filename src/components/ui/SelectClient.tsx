@@ -28,7 +28,7 @@ export function SelectClient({
   const options = clients.map((client: any) => ({
     label: client.name,
     value: client._id || client.id,
-    description: client.phone || undefined,
+    description: client.mobile || undefined,
   }));
 
   return (
