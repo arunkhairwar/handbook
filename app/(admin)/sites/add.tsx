@@ -38,8 +38,8 @@ export default function AddSiteScreen() {
       name: "",
       client: "",
       estimatedBudget: 0,
-      startDate: new Date(),
-      expectedEndDate: new Date(),
+      startDate: undefined,
+      expectedEndDate: undefined,
       address: {
         addressLine1: "",
         addressLine2: "",
