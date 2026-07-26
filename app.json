@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/logo3.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.SiteKhata"
     },
     "web": {
       "output": "static",

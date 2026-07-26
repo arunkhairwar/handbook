@@ -1,25 +1,25 @@
-export enum Role {
-  CONTRACTOR = "CONTRACTOR",
-  WORKER = "WORKER",
-  ADMIN = "ADMIN",
-  USER = "USER",
-}
-
-export type User = {
-  id: string; // UUID
-  name: string;
-  email: string;
-  role: Role; // enum candidate
-  mobile: string;
-  createdAt: string; // ISO timestamp
-  address: Address;
-};
-
 export type Address = {
   addressLine1: string | null;
   addressLine2: string | null;
-  city: string;
-  state: string;
-  pincode: string;
-  country: string;
+  city: string | null;
+  state: string | null;
+  pincode: string | null;
+  country: string | null;
+};
+
+export type UserProfile = {
+  availableForWork: boolean;
+  address: Address | null;
+};
+
+export type User = {
+  id: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  countryCode: string;
+  mobile: string;
+  createdAt: string;
+  updatedAt: string;
+  profile: UserProfile | null;
 };

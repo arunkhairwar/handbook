@@ -16,7 +16,7 @@ export default function ActiveSitesList() {
         <Text className="text-lg font-bold text-slate-800">
           Active Sites ({activeSites.length})
         </Text>
-        <TouchableOpacity onPress={() => router.push('/(admin)/sites')}>
+        <TouchableOpacity onPress={() => router.push('/(home)/sites' as any)}>
           <Text className="text-blue-600 font-semibold text-sm">View All</Text>
         </TouchableOpacity>
       </View>
@@ -25,7 +25,7 @@ export default function ActiveSitesList() {
         <TouchableOpacity 
           key={site.id} 
           className="bg-white p-4 rounded-xl mb-3 flex-row items-center shadow-sm border border-slate-100"
-          onPress={() => router.push(`/(admin)/sites/${site.id}`)}
+          onPress={() => router.push(`/(home)/sites/${site.id}` as any)}
         >
           <View className="w-10 h-10 bg-indigo-50 rounded-full items-center justify-center mr-4">
             <Ionicons name="business-outline" size={20} color="#4f46e5" />

@@ -23,11 +23,12 @@ import { ApiError } from "../types";
 
 type UseAuthReturn = {
   isLoading: boolean;
-  login: (credentials: LoginFormData) => Promise<void>;
+  login: (credentials: { phone: string; otp: string }) => Promise<void>;
   register: (data: RegisterFormData) => Promise<void>;
   verify: () => Promise<void>;
   logout: () => Promise<void>;
   initializeAuth: () => Promise<void>;
+  sendOtp: (phone: string) => Promise<boolean>;
 };
 
 export function useAuth(): UseAuthReturn {
@@ -51,7 +52,7 @@ export function useAuth(): UseAuthReturn {
       setAuthStatus(AuthStatus.AUTHENTICATED);
       Toast.show({
         type: "success",
-        text1: `Welcome ${response.data.name}`,
+        text1: `Welcome ${response.data.firstName}`,
         text2: response.message,
       });
     } catch (error) {
@@ -98,10 +99,36 @@ export function useAuth(): UseAuthReturn {
   }, [setToken, setUser, setAuthLoading, setAuthStatus, verify]);
 
   /**
-   * Login user
+   * Send OTP to user mobile
+   */
+  const sendOtp = useCallback(async (phone: string) => {
+    try {
+      setIsLoading(true);
+      const response = await authService.sendOtp(phone);
+      Toast.show({
+        type: "success",
+        text1: "OTP Sent",
+        text2: response.message || "OTP has been sent successfully",
+      });
+      return true;
+    } catch (error) {
+      const apiError = error as ApiError;
+      Toast.show({
+        type: "error",
+        text1: "OTP Send Failed",
+        text2: apiError.message,
+      });
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  /**
+   * Login user by verifying OTP
    */
   const login = useCallback(
-    async (credentials: LoginFormData) => {
+    async (credentials: { phone: string; otp: string }) => {
       try {
         setIsLoading(true);
         setAuthStatus(AuthStatus.LOADING);
@@ -198,5 +225,6 @@ export function useAuth(): UseAuthReturn {
     logout,
     verify,
     initializeAuth,
+    sendOtp,
   };
 }

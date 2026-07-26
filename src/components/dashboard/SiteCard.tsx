@@ -1,7 +1,7 @@
 import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
-import { Site } from "@/types";
+import { Site } from "@/src/types";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
@@ -20,20 +20,20 @@ export function SiteCard({ site }: SiteCardProps) {
           <Text className="text-base font-bold text-slate-900">
             {site.name}
           </Text>
-          <Text className="text-sm text-slate-500">{site.clientName}</Text>
+          <Text className="text-sm text-slate-500">{site.client?.name || "No Client"}</Text>
         </View>
-        <Badge label={site.status} variant="success" />
+        <Badge title={site.name} variant="success" />
       </View>
 
       <View>
         <Text className="text-sm font-medium text-slate-900">
-          Budget: ₹{site.estimatedBudget.toLocaleString()}
+          Budget: ₹{site.estimatedBudget?.toLocaleString() ?? "0"}
         </Text>
         <Button
           title="View Details"
           variant="outline"
           style={{ height: 36, marginTop: 8 }}
-          onPress={() => router.push(`../sites/${site.id}`)}
+          onPress={() => router.push(`/(home)/sites/${site.id}` as any)}
         />
       </View>
     </Card>

@@ -1,7 +1,6 @@
 import { TextInput, PhoneInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
 import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
-import { ValuePicker } from "@/src/components/ui/ValuePickerModal";
 import { useAuth } from "@/src/hooks";
 import { RegisterFormData, registerSchema } from "@/src/schema/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,19 +8,6 @@ import { Link } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
-
-const ROLE_OPTIONS = [
-  {
-    label: "Contractor",
-    value: "CONTRACTOR" as const,
-    icon: "construct-outline" as const,
-  },
-  {
-    label: "Worker",
-    value: "WORKER" as const,
-    icon: "hammer-outline" as const,
-  },
-];
 
 export default function RegisterScreen() {
   const { register, isLoading } = useAuth();
@@ -34,11 +20,10 @@ export default function RegisterScreen() {
     resolver: zodResolver(registerSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      mobile: "",
-      email: "",
-      password: "",
-      role: undefined,
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      phone: "",
     },
   });
 
@@ -61,29 +46,63 @@ export default function RegisterScreen() {
         </Text>
 
         <View className="w-full">
-          {/* Name */}
+          {/* First Name */}
           <Controller
             control={control}
-            name="name"
+            name="firstName"
             render={({ field: { onChange, onBlur, value } }: any) => (
               <TextInput
                 required
-                label="Full Name"
-                placeholder="Enter full name"
+                label="First Name"
+                placeholder="Enter first name"
                 leftIcon="person-outline"
-                autoCapitalize="words"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                error={errors.name?.message as string | undefined}
+                error={errors.firstName?.message as string | undefined}
               />
             )}
           />
 
-          {/* Mobile */}
+          {/* Middle Name */}
           <Controller
             control={control}
-            name="mobile"
+            name="middleName"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Middle Name (Optional)"
+                placeholder="Enter middle name"
+                leftIcon="person-outline"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value || ""}
+                error={errors.middleName?.message as string | undefined}
+              />
+            )}
+          />
+
+          {/* Last Name */}
+          <Controller
+            control={control}
+            name="lastName"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                required
+                label="Last Name"
+                placeholder="Enter last name"
+                leftIcon="person-outline"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.lastName?.message as string | undefined}
+              />
+            )}
+          />
+
+          {/* Phone/Mobile */}
+          <Controller
+            control={control}
+            name="phone"
             render={({ field: { onChange, onBlur, value } }: any) => (
               <PhoneInput
                 label="Mobile Number"
@@ -94,66 +113,7 @@ export default function RegisterScreen() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                error={errors.mobile?.message as string | undefined}
-              />
-            )}
-          />
-          {/* Role Selector */}
-          <Controller
-            control={control}
-            name="role"
-            render={({ field: { onChange, value } }: any) => (
-              <ValuePicker
-                label="Role"
-                required
-                placeholder="Select your role"
-                leftIcon="briefcase-outline"
-                options={ROLE_OPTIONS}
-                selectedValue={value}
-                onSelect={onChange}
-                title="Select Role"
-                error={errors.role?.message as string | undefined}
-              />
-            )}
-          />
-
-          {/* Email */}
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }: any) => (
-              <TextInput
-                required
-                label="Email"
-                placeholder="Enter email"
-                keyboardType="email-address"
-                leftIcon="mail"
-                autoCapitalize="none"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                error={errors.email?.message as string | undefined}
-              />
-            )}
-          />
-
-          {/* Password */}
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }: any) => (
-              <TextInput
-                required
-                label="Password"
-                placeholder="Create password"
-                leftIcon="lock-closed-outline"
-                isPassword
-                autoCapitalize="none"
-                autoComplete="password"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.password?.message}
+                error={errors.phone?.message as string | undefined}
               />
             )}
           />
@@ -162,6 +122,7 @@ export default function RegisterScreen() {
             title="Register"
             onPress={handleSubmit(onSubmit)}
             isLoading={isLoading}
+            style={{ marginTop: 12 }}
           />
 
           <View className="flex-row justify-center mt-6">

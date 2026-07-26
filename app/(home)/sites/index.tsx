@@ -53,7 +53,7 @@ export default function SitesListScreen() {
         />
       )}
 
-      <FloatingActionButton onPress={() => router.push(AppRoutes.SITE.ADD)} />
+      <FloatingActionButton onPress={() => router.push(AppRoutes.SITE.ADD as any)} />
     </SafeAreaWrapper>
   );
 }

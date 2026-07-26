@@ -12,43 +12,47 @@ import { ScrollView, Text, View } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
-
-  // Mock data for Admin profile
-  const adminProfile = {
-    name: "Admin User",
-    role: "Super Admin",
-    number: "+91 9876543210",
-    email: "admin@sitekhata.com",
-  };
   const user = useAtomValue(userAtom);
-
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const { logout } = useAuth();
 
   const handleImageChange = (uri: string) => {
     setAvatarUri(uri);
-    // TODO: upload the image to your server and update the profile
   };
+
+  const getFullName = () => {
+    if (!user) return "";
+    return [user.firstName, user.middleName, user.lastName]
+      .filter(Boolean)
+      .join(" ");
+  };
+
+  const formattedMobile = user ? `+${user.countryCode} ${user.mobile}` : "";
 
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="items-center py-10 border-b border-gray-100 bg-blue-50/30">
         <ProfilePicture
           imageUri={avatarUri}
-          name={adminProfile.name}
+          name={getFullName() || "User"}
           size={128}
           onImageChange={handleImageChange}
         />
-        <View className="flex-col items-center gap-2">
-          <Text className="text-2xl font-bold mt-4 text-gray-800">
-            {user?.name}
+        <View className="flex-col items-center gap-2 mt-4">
+          <Text className="text-2xl font-bold text-gray-800">
+            {getFullName() || "Loading..."}
           </Text>
-          <Badge
-            title={user?.role}
-            variant="success"
-            textTransform="uppercase"
-            // style={{ marginTop: 8 }}
-          />
+          {user && (
+            <Badge
+              title={
+                user?.profile?.availableForWork
+                  ? "Available for work"
+                  : "Not available for work"
+              }
+              variant={user?.profile?.availableForWork ? "success" : "warning"}
+              textTransform="uppercase"
+            />
+          )}
         </View>
       </View>
 
@@ -64,22 +68,26 @@ export default function ProfileScreen() {
           <View>
             <Text className="text-sm text-gray-500 mb-1">Mobile Number</Text>
             <Text className="text-base text-gray-800 font-medium">
-              {user?.mobile}
+              {formattedMobile}
             </Text>
           </View>
         </View>
 
+        {/* Show availability status directly */}
         <View className="flex-row items-center mb-8">
           <View className="w-12 h-12 rounded-full bg-blue-50 items-center justify-center mr-4">
-            <Ionicons name="mail-outline" size={24} color={Colors.primary} />
+            <Ionicons name="briefcase-outline" size={24} color={Colors.primary} />
           </View>
           <View>
-            <Text className="text-sm text-gray-500 mb-1">Email Address</Text>
+            <Text className="text-sm text-gray-500 mb-1">Availability Status</Text>
             <Text className="text-base text-gray-800 font-medium">
-              {user?.email}
+              {user?.profile?.availableForWork
+                ? "Looking for opportunities"
+                : "Busy / Contractor"}
             </Text>
           </View>
         </View>
+
         <Button onPress={logout} title="Logout" variant="danger" />
       </View>
     </ScrollView>

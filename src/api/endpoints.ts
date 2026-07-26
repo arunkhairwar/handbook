@@ -1,10 +1,14 @@
-export const API_BASE_URL = "http://192.168.1.41:3000/api";
+export const API_BASE_URL = "http://192.168.1.63:3000/api/v1";
 
 export const ENDPOINTS = {
   AUTH: {
-    LOGIN: "/auth/login",
+    SEND_OTP: "/auth/send-otp",
+    VERIFY_OTP: "/auth/verify-otp",
     REGISTER: "/auth/register",
-    VERIFY: "/auth/verify",
+    LOGIN: "/auth/login"
+  },
+  USER: {
+    ME: "/users/me",
   },
   CLIENT: {
     CREATE: "/client",

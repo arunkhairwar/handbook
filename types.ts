@@ -10,15 +10,15 @@ export interface User {
 
 export type SiteStatus = 'ONGOING' | 'COMPLETED';
 
-// export interface Site {
-//     id: string;
-//     name: string;
-//     clientName: string;
-//     startDate: string; // ISO Date
-//     expectedEndDate: string; // ISO Date
-//     status: SiteStatus;
-//     estimatedBudget: number;
-// }
+export interface Site {
+    id: string;
+    name: string;
+    clientName: string;
+    startDate: string; // ISO Date
+    expectedEndDate: string; // ISO Date
+    status: SiteStatus;
+    estimatedBudget: number;
+}
 
 export type WorkerRole = 'MISTRI' | 'HELPER';
 
