@@ -34,24 +34,24 @@ axiosInstance.interceptors.request.use(
       }
     } catch (error) {
       // Token retrieval failed, proceed without token
-      if (__DEV__) {
-        console.warn("Failed to retrieve auth token:", error);
-      }
+      // if (__DEV__) {
+      //   console.warn("Failed to retrieve auth token:", error);
+      // }
     }
 
     // Dev logging
-    if (__DEV__) {
-      console.log(
-        `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
-      );
-    }
+    // if (__DEV__) {
+    //   console.log(
+    //     `[API Request] ${config.method?.toUpperCase()} ${config.url}`,
+    //   );
+    // }
 
     return config;
   },
   (error: AxiosError) => {
-    if (__DEV__) {
-      console.error("[API Request Error]", error);
-    }
+    // if (__DEV__) {
+    //   console.error("[API Request Error]", error);
+    // }
     return Promise.reject(error);
   },
 );
@@ -60,17 +60,17 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     if (__DEV__) {
-      console.log(`[API Response] ${response.status} ${response.config.url}`);
+      // console.log(`[API Response] ${response.status} ${response.config.url}`);
     }
     return response;
   },
   (error: AxiosError<ApiError>) => {
     if (__DEV__) {
-      console.error("[API Response Error]", {
-        url: error.config?.url,
-        status: error.response?.status,
-        data: error.response?.data,
-      });
+      // console.error("[API Response Error]", {
+      //   url: error.config?.url,
+      //   status: error.response?.status,
+      //   data: error.response?.data,
+      // });
     }
 
     // Handle 401 Unauthorized - session expired
@@ -88,8 +88,8 @@ axiosInstance.interceptors.response.use(
     // Extract error message from response
     // Prioritize 'error' field from backend as it contains the human-readable message
     const errorMessage =
+    error.response?.data?.message ||
       error.response?.data?.error ||
-      error.response?.data?.message ||
       error.message ||
       "An unexpected error occurred";
 

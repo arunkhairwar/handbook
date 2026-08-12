@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://192.168.1.63:3000/api/v1";
+export const API_BASE_URL = "http://192.168.1.78:3000/api/v1";
 
 export const ENDPOINTS = {
   AUTH: {
@@ -11,25 +11,25 @@ export const ENDPOINTS = {
     ME: "/users/me",
   },
   CLIENT: {
-    CREATE: "/client",
-    GET_ALL: "/client",
-    GET_BY_ID: (id: string) => `/client/${id}`,
-    UPDATE: (id: string) => `/client/${id}`,
-    DELETE: (id: string) => `/client/${id}`,
+    CREATE: "/clients",
+    GET_ALL: "/clients",
+    GET_BY_ID: (id: string) => `/clients/${id}`,
+    UPDATE: (id: string) => `/clients/${id}`,
+    DELETE: (id: string) => `/clients/${id}`,
   },
   SITE: {
-    CREATE: "/site",
-    GET_ALL: "/site",
-    GET_BY_ID: (id: string) => `/site/${id}`,
-    UPDATE: (id: string) => `/site/${id}`,
-    DELETE: (id: string) => `/site/${id}`,
+    CREATE: "/sites",
+    GET_ALL: "/sites",
+    GET_BY_ID: (id: string) => `/sites/${id}`,
+    UPDATE: (id: string) => `/sites/${id}`,
+    DELETE: (id: string) => `/sites/${id}`,
   },
   WORKER: {
-    CREATE: "/worker",
-    GET_ALL: "/worker",
-    GET_BY_ID: (id: string) => `/worker/${id}`,
-    UPDATE: (id: string) => `/worker/${id}`,
-    DELETE: (id: string) => `/worker/${id}`,
+    CREATE: "/workers",
+    GET_ALL: "/workers",
+    GET_BY_ID: (id: string) => `/workers/${id}`,
+    UPDATE: (id: string) => `/workers/${id}`,
+    DELETE: (id: string) => `/workers/${id}`,
   },
 };
 

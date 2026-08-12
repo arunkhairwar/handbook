@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "typecheck": "tsc --noEmit",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -17,6 +18,7 @@
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
+    "@tanstack/react-query": "^5.101.4",
     "axios": "^1.13.6",
     "babel-preset-expo": "~56.0.0",
     "clsx": "^2.1.1",
@@ -56,6 +58,8 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
+    "@babel/types": "^8.0.4",
+    "@types/estree": "^1.0.9",
     "@types/react": "~19.2.14",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~56.0.4",

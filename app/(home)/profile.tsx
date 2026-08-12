@@ -3,21 +3,37 @@ import { userAtom } from "@/src/atoms/auth.atoms";
 import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import ProfilePicture from "@/src/components/ui/ProfilePicture";
-import { useAuth } from "@/src/hooks";
+import { useLogout } from "@/src/hooks";
+import { AppRoutes } from "@/src/routes/app.routes";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const user = useAtomValue(userAtom);
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
-  const { logout } = useAuth();
+  const logoutMutation = useLogout();
 
   const handleImageChange = (uri: string) => {
     setAvatarUri(uri);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+      Toast.show({
+        type: "success",
+        text1: "Logged Out",
+        text2: "You have been successfully logged out",
+      });
+      router.replace(AppRoutes.AUTH.LOGIN);
+    } catch {
+      // Error toast handled globally by MutationCache
+    }
   };
 
   const getFullName = () => {
@@ -88,8 +104,9 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <Button onPress={logout} title="Logout" variant="danger" />
+        <Button onPress={handleLogout} title="Logout" variant="danger" isLoading={logoutMutation.isPending} />
       </View>
     </ScrollView>
   );
 }
+

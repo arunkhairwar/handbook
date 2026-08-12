@@ -57,7 +57,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
         {label && (
           <Text className="text-secondary-600 dark:text-secondary-400 text-sm font-semibold mb-2">
             {label}
-            {required && <Text className="text-error-500"> *</Text>}
+            {required && <Text className="text-red-500"> *</Text>}
           </Text>
         )}
         <View

@@ -1,3 +1,4 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -8,8 +9,10 @@ SplashScreen.preventAutoHideAsync();
 
 import "../global.css";
 import SplashScreenLoader from "@/src/components/SplashScreenLoader";
+import { queryClient } from "@/src/lib/queryClient";
 import Toast from "react-native-toast-message";
 import { getToastConfig } from "@/src/toast/toastConfig";
+import { LogBox } from "react-native";
 
 export default function RootLayout() {
   const [appReady, setAppReady] = useState(false);
@@ -23,8 +26,12 @@ export default function RootLayout() {
   }
   const isDark = false;
 
+  if(__DEV__){
+    LogBox.ignoreAllLogs(true);
+  }
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
@@ -32,6 +39,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="dark" />
       <Toast config={getToastConfig(isDark)} visibilityTime={3000} />
-    </>
+    </QueryClientProvider>
   );
 }

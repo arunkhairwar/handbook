@@ -20,5 +20,6 @@ export const AppRoutes = {
   AUTH: {
     LOGIN: "/(auth)/login",
     REGISTER: "/(auth)/register",
+    VERIFY_OTP: "/(auth)/verify-otp",
   },
 } as const;

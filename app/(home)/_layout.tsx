@@ -3,22 +3,40 @@ import Avatar from "@/src/components/ui/Avatar";
 import BackButton from "@/src/components/ui/BackButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function AdminLayout() {
+  const insets = useSafeAreaInsets();
+
+  const TAB_BAR_HEIGHT = 60;
+  const TAB_BAR_BOTTOM_PADDING = insets.bottom;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: Colors.background, borderWidth: 2 },
-        headerTitleStyle: { color: Colors.primary, fontWeight: "bold" },
+
+        headerStyle: {
+          backgroundColor: Colors.background,
+          borderWidth: 2,
+        },
+
+        headerTitleStyle: {
+          color: Colors.primary,
+          fontWeight: "bold",
+        },
+
         headerRight: () => <Avatar />,
+
         tabBarActiveTintColor: Colors.success,
         tabBarInactiveTintColor: Colors.textSecondary,
+
         tabBarStyle: {
           borderTopColor: Colors.border,
-          height: 60,
-          paddingBottom: 8,
+
+          height: TAB_BAR_HEIGHT + TAB_BAR_BOTTOM_PADDING,
+
+          paddingBottom: TAB_BAR_BOTTOM_PADDING,
           paddingTop: 8,
         },
       }}
@@ -32,36 +50,40 @@ export default function AdminLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="clients"
         options={{
           title: "Clients",
-          headerShown: false, // We will use stack inside
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="people-outline" size={24} color={color} />
           ),
         }}
       />
+
       <Tabs.Screen
         name="sites"
         options={{
           title: "Sites",
-          headerShown: false, // We will use stack inside
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="business-outline" size={24} color={color} />
           ),
         }}
       />
+
       <Tabs.Screen
         name="workers"
         options={{
           title: "Workers",
-          headerShown: false, // Stack inside
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="construct-outline" size={24} color={color} />
           ),
         }}
       />
+
       <Tabs.Screen
         name="payments"
         options={{
@@ -71,6 +93,7 @@ export default function AdminLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{

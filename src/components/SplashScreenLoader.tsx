@@ -1,5 +1,5 @@
 import { Images } from "@/constants/images";
-import { useAuth } from "@/src/hooks";
+import { useInitializeAuth } from "@/src/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Image, Text, View } from "react-native";
 
@@ -16,7 +16,7 @@ export default function SplashScreenLoader({ onFinish }: Props) {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const logoScale = useRef(new Animated.Value(0.8)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
-  const { initializeAuth } = useAuth();
+  const { initializeAuth } = useInitializeAuth();
 
   const authReady = useRef(false);
   const animDone = useRef(false);
