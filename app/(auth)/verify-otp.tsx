@@ -23,11 +23,11 @@ export default function VerifyOtpScreen() {
   const timerRef = useRef<any>(null);
 
   // Redirect back to login if no phone is available (e.g. deep-link)
-  useEffect(() => {
-    if (!userPhone) {
-      router.replace("/login");
-    }
-  }, [userPhone]);
+  // useEffect(() => {
+  //   if (!userPhone) {
+  //     router.replace("/login");
+  //   }
+  // }, [userPhone]);
 
   const otpForm = useForm<VerifyOtpFormData>({
     resolver: zodResolver(verifyOtpSchema),

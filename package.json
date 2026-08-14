@@ -58,7 +58,7 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@babel/types": "^8.0.4",
+    "@babel/types": "^7.29.8",
     "@types/estree": "^1.0.9",
     "@types/react": "~19.2.14",
     "eslint": "^9.25.0",
