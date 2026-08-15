@@ -1,23 +1,26 @@
 import { Colors } from "@/constants/Colors";
-import { TextInput } from "@/src/components/input";
+import { authStatusAtom } from "@/src/atoms/auth.atoms";
 import { AuthWrapper } from "@/src/components/auth/AuthWrapper";
+import { TextInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
-import { useSendOtp, useLogin } from "@/src/hooks";
-import { useAuthFlowStore } from "@/src/store/auth.store";
+import { useLogin, useSendOtp } from "@/src/hooks";
+import { AppRoutes } from "@/src/routes";
 import { VerifyOtpFormData, verifyOtpSchema } from "@/src/schema/auth.schema";
+import { useAuthFlowStore } from "@/src/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
+import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import { AppRoutes } from "@/src/routes";
 
 export default function VerifyOtpScreen() {
   const sendOtpMutation = useSendOtp();
   const loginMutation = useLogin();
   const userPhone = useAuthFlowStore((s) => s.userPhone);
   const clearUserPhone = useAuthFlowStore((s) => s.clearUserPhone);
+  const authStatus = useAtomValue(authStatusAtom);
 
   const [countdown, setCountdown] = useState<number>(30);
   const timerRef = useRef<any>(null);

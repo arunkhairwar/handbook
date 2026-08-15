@@ -8,7 +8,7 @@ import { AppRoutes } from "@/src/routes/app.routes";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 

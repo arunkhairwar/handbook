@@ -60,12 +60,12 @@ export function useLogin() {
       const loginRes = await authService.login(credentials);
       await setSecureValue(StorageKeys.AUTH_TOKEN, loginRes.data.token);
 
-      const verifyRes = await authService.verify();
+      const userRes = await authService.getUserProfile();
 
       return {
         token: loginRes.data.token,
-        user: verifyRes.data,
-        message: verifyRes.message,
+        user: userRes.data,
+        message: loginRes.message,
       };
     },
     meta: { errorTitle: "Login Failed" },

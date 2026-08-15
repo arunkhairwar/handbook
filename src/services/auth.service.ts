@@ -2,7 +2,7 @@
 import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
 import { RegisterFormData } from "../schema/auth.schema";
-import { LoginResponse, RegisterResponse, VerifyResponse } from "../types";
+import { ApiResponse, LoginResponse, RegisterResponse, User, VerifyResponse } from "../types";
 
 export const authService = {
   sendOtp: async (phone: string): Promise<{ success: boolean; message: string }> => {
@@ -56,8 +56,8 @@ export const authService = {
     };
   },
 
-  verify: async (): Promise<VerifyResponse> => {
-    const response = await axiosInstance.get<VerifyResponse>(
+  getUserProfile: async (): Promise<ApiResponse<User>> => {
+    const response = await axiosInstance.get<ApiResponse<User>>(
       ENDPOINTS.USER.ME,
     );
     return response.data;

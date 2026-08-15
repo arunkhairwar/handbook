@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://10.0.0.30:3000/api/v1";
+export const API_BASE_URL = "http://192.168.1.79:3000/api/v1";
 
 export const ENDPOINTS = {
   AUTH: {
