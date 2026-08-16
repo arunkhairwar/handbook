@@ -8,7 +8,7 @@ export const createSiteSchema = z.object({
   estimatedBudget: z.number().optional(),
   startDate: z.date().optional(),
   expectedEndDate: z.date().optional(),
-  client: z.string("Client ID is required"),
+  clientId: z.string("Client ID is required"),
   address: z
     .object({
       addressLine1: z.string().optional(),

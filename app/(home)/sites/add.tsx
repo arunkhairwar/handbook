@@ -34,7 +34,7 @@ export default function AddSiteScreen() {
     resolver: zodResolver(createSiteSchema),
     defaultValues: {
       name: "",
-      client: "",
+      clientId: "",
       estimatedBudget: 0,
       startDate: undefined,
       expectedEndDate: undefined,
@@ -50,7 +50,7 @@ export default function AddSiteScreen() {
   });
 
   const onSubmit = async (data: SiteFormValues) => {
-    const cleanData: CreateSiteData = { ...data };
+    const cleanData: CreateSiteData = { ...data};
     const hasAddressInput =
       data.address &&
       Object.values(data.address).some(
@@ -113,14 +113,14 @@ export default function AddSiteScreen() {
 
         <Controller
           control={control}
-          name="client"
+          name="clientId"
           render={({ field: { onChange, value } }) => (
             <SelectClient
               label="Client"
               required
               selectedValue={value}
               onSelect={onChange}
-              error={errors.client?.message}
+              error={errors.clientId?.message}
             />
           )}
         />
