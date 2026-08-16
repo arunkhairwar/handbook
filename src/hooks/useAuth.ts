@@ -44,7 +44,7 @@ export function useInitializeAuth(): UseInitializeAuthReturn {
       if (storedToken) {
         setToken(storedToken);
 
-        const response = await authService.verify();
+        const response = await authService.getUserProfile();
         setUser(response.data);
         setAuthStatus(AuthStatus.AUTHENTICATED);
       } else {

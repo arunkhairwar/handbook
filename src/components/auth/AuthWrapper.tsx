@@ -26,8 +26,8 @@ export function AuthWrapper({
   children,
 }: AuthWrapperProps) {
   return (
-    <SafeAreaWrapper scrollable={scrollable}>
-      <View className="flex-1 justify-center p-6">
+    <View className="my-auto" >
+      <View className=" justify-center p-6">
         {/* App Logo */}
         <View className="flex-row justify-center mb-4">
           <Image
@@ -50,6 +50,6 @@ export function AuthWrapper({
 
         {children}
       </View>
-    </SafeAreaWrapper>
+    </View>
   );
 }

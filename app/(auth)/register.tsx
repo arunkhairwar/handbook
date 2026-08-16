@@ -11,6 +11,7 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
 import Toast from "react-native-toast-message";
+import KeyboardAvoidingWrapper from "@/src/components/ui/KeybardAvoidingWrapper";
 
 export default function RegisterScreen() {
   const registerMutation = useRegister();
@@ -33,7 +34,7 @@ export default function RegisterScreen() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-     const response = await registerMutation.mutateAsync(data);
+      const response = await registerMutation.mutateAsync(data);
       Toast.show({
         type: "success",
         text1: "Account Created!",
@@ -48,100 +49,107 @@ export default function RegisterScreen() {
   };
 
   return (
-    <AuthWrapper
-      title="Create Account"
-      description="Sign up to manage your sites"
-      scrollable
+    <KeyboardAvoidingWrapper
+      header={null}
+      resetScrollOnKeyboardHide
+      contentContainerClassName="flex-grow justify-center p-6"
+      containerClassName="flex-1 bg-[#F9FAFB]"
     >
-      <View className="w-full">
-        {/* First Name */}
-        <Controller
-          control={control}
-          name="firstName"
-          render={({ field: { onChange, onBlur, value } }: any) => (
-            <TextInput
-              required
-              label="First Name"
-              placeholder="Enter first name"
-              leftIcon="person-outline"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.firstName?.message as string | undefined}
-            />
-          )}
-        />
+      <AuthWrapper
+        title="Create Account"
+        description="Sign up to manage your sites"
+        scrollable
+      >
+        <View className="w-full">
+          {/* First Name */}
+          <Controller
+            control={control}
+            name="firstName"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                required
+                label="First Name"
+                placeholder="Enter first name"
+                leftIcon="person-outline"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.firstName?.message as string | undefined}
+              />
+            )}
+          />
 
-        {/* Middle Name */}
-        <Controller
-          control={control}
-          name="middleName"
-          render={({ field: { onChange, onBlur, value } }: any) => (
-            <TextInput
-              label="Middle Name (Optional)"
-              placeholder="Enter middle name"
-              leftIcon="person-outline"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ""}
-              error={errors.middleName?.message as string | undefined}
-            />
-          )}
-        />
+          {/* Middle Name */}
+          <Controller
+            control={control}
+            name="middleName"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                label="Middle Name (Optional)"
+                placeholder="Enter middle name"
+                leftIcon="person-outline"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value || ""}
+                error={errors.middleName?.message as string | undefined}
+              />
+            )}
+          />
 
-        {/* Last Name */}
-        <Controller
-          control={control}
-          name="lastName"
-          render={({ field: { onChange, onBlur, value } }: any) => (
-            <TextInput
-              required
-              label="Last Name"
-              placeholder="Enter last name"
-              leftIcon="person-outline"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.lastName?.message as string | undefined}
-            />
-          )}
-        />
+          {/* Last Name */}
+          <Controller
+            control={control}
+            name="lastName"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                required
+                label="Last Name"
+                placeholder="Enter last name"
+                leftIcon="person-outline"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.lastName?.message as string | undefined}
+              />
+            )}
+          />
 
-        {/* Phone/Mobile */}
-        <Controller
-          control={control}
-          name="phone"
-          render={({ field: { onChange, onBlur, value } }: any) => (
-            <PhoneInput
-              label="Mobile Number"
-              required
-              disableCountrySelection
-              placeholder="Enter mobile number"
-              maxLength={10}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.phone?.message as string | undefined}
-            />
-          )}
-        />
+          {/* Phone/Mobile */}
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <PhoneInput
+                label="Mobile Number"
+                required
+                disableCountrySelection
+                placeholder="Enter mobile number"
+                maxLength={10}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={errors.phone?.message as string | undefined}
+              />
+            )}
+          />
 
-        <Button
-          title="Register"
-          onPress={handleSubmit(onSubmit)}
-          isLoading={registerMutation.isPending}
-          style={{ marginTop: 12 }}
-        />
+          <Button
+            title="Register"
+            onPress={handleSubmit(onSubmit)}
+            isLoading={registerMutation.isPending}
+            style={{ marginTop: 12 }}
+          />
 
-        <View className="flex-row justify-center mt-6">
-          <Text className="text-slate-500 text-sm">
-            Already have an account?{" "}
-          </Text>
-          <Link href="/login" asChild>
-            <Text className="text-slate-800 text-sm font-bold">Login</Text>
-          </Link>
+          <View className="flex-row justify-center mt-6">
+            <Text className="text-slate-500 text-sm">
+              Already have an account?{" "}
+            </Text>
+            <Link href="/login" asChild>
+              <Text className="text-slate-800 text-sm font-bold">Login</Text>
+            </Link>
+          </View>
         </View>
-      </View>
-    </AuthWrapper>
+      </AuthWrapper>
+    </KeyboardAvoidingWrapper>
   );
 }

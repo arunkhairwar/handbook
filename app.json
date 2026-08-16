@@ -11,14 +11,13 @@
       "supportsTablet": true
     },
     "android": {
-      "usesCleartextTraffic": true,
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/logo3.png",
         "backgroundImage": "./assets/images/logo3.png",
         "monochromeImage": "./assets/images/logo3.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.SiteKhata"
     },
@@ -41,7 +40,15 @@
         }
       ],
       "expo-secure-store",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

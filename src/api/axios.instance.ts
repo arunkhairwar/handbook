@@ -15,6 +15,7 @@ async function handleSessionExpiry() {
   router.replace("/(auth)/login");
 }
 
+
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
