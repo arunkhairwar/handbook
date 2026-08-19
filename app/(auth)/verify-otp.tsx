@@ -3,6 +3,7 @@ import { authStatusAtom } from "@/src/atoms/auth.atoms";
 import { AuthWrapper } from "@/src/components/auth/AuthWrapper";
 import { TextInput } from "@/src/components/input";
 import { Button } from "@/src/components/ui/Button";
+import KeyboardAvoidingWrapper from "@/src/components/ui/KeybardAvoidingWrapper";
 import { useLogin, useSendOtp } from "@/src/hooks";
 import { AppRoutes } from "@/src/routes";
 import { VerifyOtpFormData, verifyOtpSchema } from "@/src/schema/auth.schema";
@@ -102,79 +103,88 @@ export default function VerifyOtpScreen() {
   };
 
   return (
-    <AuthWrapper
-      title="Verify OTP"
-      description="Enter the code sent to your phone."
+    <KeyboardAvoidingWrapper
+      header={null}
+      resetScrollOnKeyboardHide
+      contentContainerClassName="flex-grow justify-center p-6"
+      containerClassName="flex-1 bg-[#F9FAFB]"
     >
-      <View className="w-full">
-        {/* Masked phone badge */}
-        <View className="bg-slate-50 p-4 rounded-xl mb-6 flex-row items-center border border-slate-100">
-          <View className="flex-1">
-            <Text className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
-              Sent OTP to
-            </Text>
-            <Text className="text-base font-bold text-slate-700">
-              {maskPhone(userPhone)}
-            </Text>
-          </View>
-        </View>
-
-        <Controller
-          control={otpForm.control}
-          name="otp"
-          render={({ field: { onChange, onBlur, value } }: any) => (
-            <TextInput
-              required
-              label="OTP Verification"
-              placeholder="Enter 6-digit OTP"
-              leftIcon="shield-checkmark-outline"
-              keyboardType="number-pad"
-              maxLength={6}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={otpForm.formState.errors.otp?.message}
-            />
-          )}
-        />
-
-        <Button
-          title="Verify OTP"
-          onPress={otpForm.handleSubmit(handleVerifyOtp)}
-          isLoading={loginMutation.isPending}
-          style={{ marginTop: 12 }}
-        />
-
-        <View className="flex-row justify-between items-center mt-6 px-1">
-          <TouchableOpacity onPress={handleResendOtp} disabled={countdown > 0}>
-            <View className="flex-row justify-center mt-6">
-              <Text className="text-slate-500 text-sm">
-                Back to Login{" "}
+      <AuthWrapper
+        title="Verify OTP"
+        description="Enter the code sent to your phone."
+      >
+        <View className="w-full">
+          {/* Masked phone badge */}
+          <View className="bg-slate-50 p-4 rounded-xl mb-6 flex-row items-center border border-slate-100">
+            <View className="flex-1">
+              <Text className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
+                Sent OTP to
               </Text>
+              <Text className="text-base font-bold text-slate-700">
+                {maskPhone(userPhone)}
+              </Text>
+            </View>
+          </View>
+
+          <Controller
+            control={otpForm.control}
+            name="otp"
+            render={({ field: { onChange, onBlur, value } }: any) => (
+              <TextInput
+                required
+                label="OTP Verification"
+                placeholder="Enter 6-digit OTP"
+                leftIcon="shield-checkmark-outline"
+                keyboardType="number-pad"
+                maxLength={6}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                error={otpForm.formState.errors.otp?.message}
+              />
+            )}
+          />
+
+          <Button
+            title="Verify OTP"
+            onPress={otpForm.handleSubmit(handleVerifyOtp)}
+            isLoading={loginMutation.isPending}
+            style={{ marginTop: 12 }}
+          />
+
+          <View className="flex-row justify-between items-center mt-6">
+            <View className="flex-row justify-start items-center">
+              <Text className="text-slate-500 text-sm">Back to Login </Text>
               <Link href="/login" asChild>
-                <Text className="text-slate-800 text-sm font-bold">
-                  Login
-                </Text>
+                <Text className="text-slate-800 text-sm font-bold">Login</Text>
               </Link>
             </View>
-            <Text
-              style={{
-                color: countdown > 0 ? "#94a3b8" : Colors.primary,
-                fontWeight: "bold",
-              }}
-              className="text-sm"
-            >
-              Resend OTP
-            </Text>
-          </TouchableOpacity>
 
-          {countdown > 0 && (
-            <Text className="text-slate-400 text-sm font-medium">
-              in {countdown}s
-            </Text>
-          )}
+            <View className="flex-col items-end px-1">
+              <TouchableOpacity
+                onPress={handleResendOtp}
+                disabled={countdown > 0}
+              >
+                <Text
+                  style={{
+                    color: countdown > 0 ? "#94a3b8" : Colors.primary,
+                    fontWeight: "bold",
+                  }}
+                  className="text-sm"
+                >
+                  Resend OTP
+                </Text>
+              </TouchableOpacity>
+
+              {countdown > 0 && (
+                <Text className="text-slate-400 text-sm font-medium">
+                  in {countdown}s
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
-      </View>
-    </AuthWrapper>
+      </AuthWrapper>
+    </KeyboardAvoidingWrapper>
   );
 }

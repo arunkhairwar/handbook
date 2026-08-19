@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useStore } from '@/store/mockStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { AppRoutes } from '@/src/routes';
 
 export default function ActiveSitesList() {
   const sites = useStore((state) => state.sites);
@@ -16,7 +17,7 @@ export default function ActiveSitesList() {
         <Text className="text-lg font-bold text-slate-800">
           Active Sites ({activeSites.length})
         </Text>
-        <TouchableOpacity onPress={() => router.push('/(home)/sites' as any)}>
+        <TouchableOpacity onPress={() => router.push(AppRoutes.SITE as any)}>
           <Text className="text-blue-600 font-semibold text-sm">View All</Text>
         </TouchableOpacity>
       </View>
