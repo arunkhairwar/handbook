@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/Button";
 import { DateTimePicker } from "@/src/components/ui/DateTimePicker";
 import { Divider } from "@/src/components/ui/Divider";
 import { SelectClient } from "@/src/components/ui/SelectClient";
-import { useSite } from "@/src/hooks/useSite";
+import { useCreateSite } from "@/src/hooks/useSite";
 import { createSiteSchema } from "@/src/schema/sites.schema";
 import { CreateSiteData } from "@/src/services/site.service";
 import { FontAwesome } from "@expo/vector-icons";
@@ -24,7 +24,7 @@ type SiteFormValues = z.infer<typeof createSiteSchema>;
 
 export default function AddSiteScreen() {
   const router = useRouter();
-  const { createSite, isLoading } = useSite();
+  const { mutateAsync: createSite, isPending: isLoading } = useCreateSite();
 
   const {
     control,

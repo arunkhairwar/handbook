@@ -1,342 +1,157 @@
 import { Colors } from "@/constants/Colors";
 import { Badge } from "@/src/components/ui/Badge";
-import { Button } from "@/src/components/ui/Button";
 import { Card } from "@/src/components/ui/Card";
-import { Input } from "@/src/components/ui/Input";
-import { useStore } from "@/store/mockStore";
-import { AttendanceRecord, MaterialExpense } from "@/types";
+import { Divider } from "@/src/components/ui/Divider";
+import { FullScreenLoader } from "@/src/components/ui/FullScreenLoader";
+import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
+import { ScreenHeader } from "@/src/components/ui/ScreenHeader";
+import { useSiteDetails } from "@/src/hooks/useSite";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-type Tab = "OVERVIEW" | "LABOR" | "MATERIALS";
+import moment from "moment";
+import React from "react";
+import { ScrollView, Text, View } from "react-native";
 
 export default function SiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [activeTab, setActiveTab] = useState<Tab>("OVERVIEW");
-  const [expenseName, setExpenseName] = useState("");
-  const [expenseCost, setExpenseCost] = useState("");
+  const { data: site, isLoading, error } = useSiteDetails(id);
 
-  const site = useStore((state) => state.sites.find((s) => s.id === id));
-  const expenses = useStore((state) =>
-    state.expenses.filter((e) => e.siteId === id),
-  );
-  const attendance = useStore((state) =>
-    state.attendance.filter((a) => a.siteId === id),
-  );
-  const workers = useStore((state) => state.workers);
-  const addExpense = useStore((state) => state.addExpense);
-  const markAttendance = useStore((state) => state.markAttendance);
+  if (isLoading) {
+    return <FullScreenLoader message="Loading site details..." />;
+  }
 
-  if (!site)
+  if (error || !site) {
     return (
-      <View style={styles.center}>
-        <Text>Site not found</Text>
-      </View>
+      <SafeAreaWrapper className="flex-1 bg-[#F8FAFC]">
+        <ScreenHeader label="Site Details" />
+        <View className="flex-1 items-center justify-center p-6">
+          <Ionicons name="alert-circle-outline" size={60} color={Colors.error} />
+          <Text className="text-lg font-semibold text-slate-800 mt-4">
+            Site Not Found
+          </Text>
+          <Text className="text-sm text-slate-500 text-center mt-2">
+            The site you are looking for does not exist or could not be loaded.
+          </Text>
+        </View>
+      </SafeAreaWrapper>
     );
+  }
 
-  const totalMaterials = expenses.reduce((acc, e) => acc + e.cost, 0);
-  const totalLabor = attendance.reduce((acc, a) => acc + a.wageSnapshot, 0); // This assumes wageSnapshot is daily wage
-  const totalCost = totalMaterials + totalLabor;
-  const remainingBudget = site.estimatedBudget - totalCost;
+  const formatDate = (dateString?: string | null) =>
+    dateString ? moment(dateString).format("DD MMM YYYY") : "Not set";
 
-  const handleAddExpense = () => {
-    if (!expenseName || !expenseCost) return;
-    const expense: MaterialExpense = {
-      id: Math.random().toString(),
-      siteId: site.id,
-      name: expenseName,
-      quantity: "1", // simplified
-      cost: Number(expenseCost),
-      date: new Date().toISOString(),
-    };
-    addExpense(expense);
-    setExpenseName("");
-    setExpenseCost("");
-  };
-
-  const handleMarkAttendance = (workerId: string, wage: number) => {
-    // Just mark present for today for simplicity
-    const today = new Date().toISOString().split("T")[0];
-    const record: AttendanceRecord = {
-      id: Math.random().toString(),
-      siteId: site.id,
-      workerId,
-      date: today,
-      isPresent: true,
-      wageSnapshot: wage,
-    };
-    markAttendance(record);
-  };
-
-  const isPresentToday = (workerId: string) => {
-    const today = new Date().toISOString().split("T")[0];
-    return attendance.some((a) => a.workerId === workerId && a.date === today);
-  };
+  const formatCurrency = (amount?: number | null) =>
+    amount !== undefined && amount !== null ? `₹ ${amount.toLocaleString("en-IN")}` : "Not set";
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{site.name}</Text>
-        <Text style={styles.subtitle}>{site.clientName}</Text>
-      </View>
+    <SafeAreaWrapper className="flex-1 bg-[#F8FAFC]">
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-4 pb-10"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header section card */}
+        <Card className="mb-4 bg-white border border-slate-200">
+          <View className="flex-row items-center justify-between mb-3">
+            <View
+              className="w-12 h-12 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: Colors.tiles.site.background }}
+            >
+              <Ionicons
+                name="business-outline"
+                size={24}
+                color={Colors.tiles.site.icon}
+              />
+            </View>
+            <View className="flex-1">
+              <Text className="text-xl font-bold text-slate-900" numberOfLines={2}>
+                {site.name}
+              </Text>
+            </View>
+            <Badge title="ONGOING" variant="success" />
+          </View>
+        </Card>
 
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "OVERVIEW" && styles.activeTab]}
-          onPress={() => setActiveTab("OVERVIEW")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === "OVERVIEW" && styles.activeTabText,
-            ]}
-          >
-            Overview
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "LABOR" && styles.activeTab]}
-          onPress={() => setActiveTab("LABOR")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === "LABOR" && styles.activeTabText,
-            ]}
-          >
-            Labor
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "MATERIALS" && styles.activeTab]}
-          onPress={() => setActiveTab("MATERIALS")}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === "MATERIALS" && styles.activeTabText,
-            ]}
-          >
-            Materials
-          </Text>
-        </TouchableOpacity>
-      </View>
+        {/* Project Metrics Section */}
+        <Text className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+          Project Metrics
+        </Text>
+        <Card className="mb-4 bg-white border border-slate-200">
+          <View className="flex-row items-center justify-between py-2">
+            <View className="flex-row items-center">
+              <View className="w-9 h-9 rounded-lg bg-amber-50 items-center justify-center mr-3">
+                <Ionicons name="wallet-outline" size={20} color={Colors.accent} />
+              </View>
+              <View>
+                <Text className="text-xs text-slate-400">Estimated Budget</Text>
+                <Text className="text-base font-bold text-slate-800">
+                  {formatCurrency(site.estimatedBudget)}
+                </Text>
+              </View>
+            </View>
+          </View>
+          <Divider />
+          <View className="flex-row items-center justify-between py-2">
+            <View className="flex-row items-center flex-1">
+              <View className="w-9 h-9 rounded-lg bg-blue-50 items-center justify-center mr-3">
+                <Ionicons name="calendar-outline" size={20} color="#3B82F6" />
+              </View>
+              <View className="flex-1">
+                <Text className="text-xs text-slate-400">Start Date</Text>
+                <Text className="text-sm font-semibold text-slate-800">
+                  {formatDate(site.startDate)}
+                </Text>
+              </View>
+            </View>
+            <View className="flex-row items-center flex-1">
+              <View className="w-9 h-9 rounded-lg bg-rose-50 items-center justify-center mr-3">
+                <Ionicons name="calendar-outline" size={20} color={Colors.error} />
+              </View>
+              <View className="flex-1">
+                <Text className="text-xs text-slate-400">Expected End</Text>
+                <Text className="text-sm font-semibold text-slate-800">
+                  {formatDate(site.expectedEndDate)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Card>
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {activeTab === "OVERVIEW" && (
+        {/* Address Details */}
+        {site.profile?.address && (
           <>
-            <Card>
-              <Text style={styles.cardHeader}>Financial Summary</Text>
-              <View style={styles.statRow}>
-                <Text>Budget</Text>
-                <Text style={styles.statValue}>
-                  ₹{site.estimatedBudget.toLocaleString()}
-                </Text>
-              </View>
-              <View style={styles.statRow}>
-                <Text>Spent (Materials + Labor)</Text>
-                <Text style={[styles.statValue, { color: Colors.error }]}>
-                  ₹{totalCost.toLocaleString()}
-                </Text>
-              </View>
-              <View
-                style={[
-                  styles.statRow,
-                  {
-                    borderTopWidth: 1,
-                    borderColor: Colors.border,
-                    paddingTop: 8,
-                    marginTop: 8,
-                  },
-                ]}
-              >
-                <Text style={{ fontWeight: "bold" }}>Remaining</Text>
-                <Text
-                  style={[
-                    styles.statValue,
-                    {
-                      color:
-                        remainingBudget < 0 ? Colors.error : Colors.success,
-                    },
-                  ]}
-                >
-                  ₹{remainingBudget.toLocaleString()}
-                </Text>
+            <Text className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-1">
+              Address Details
+            </Text>
+            <Card className="mb-4 bg-white border border-slate-200">
+              <View className="flex-row items-start py-1">
+                <View className="w-9 h-9 rounded-lg bg-purple-50 items-center justify-center mr-3 mt-0.5">
+                  <Ionicons name="location-outline" size={20} color="#8B5CF6" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-xs text-slate-400">Location Address</Text>
+                  {site.profile.address.addressLine1 && (
+                    <Text className="text-sm text-slate-800 mt-1">
+                      {site.profile.address.addressLine1}
+                    </Text>
+                  )}
+                  {site.profile.address.addressLine2 && (
+                    <Text className="text-sm text-slate-800">
+                      {site.profile.address.addressLine2}
+                    </Text>
+                  )}
+                  <Text className="text-sm font-semibold text-slate-800 mt-0.5">
+                    {site.profile.address.city}, {site.profile.address.state}
+                  </Text>
+                  <Text className="text-sm text-slate-500 mt-0.5">
+                    PIN: {site.profile.address.pincode}
+                  </Text>
+                </View>
               </View>
             </Card>
           </>
         )}
-
-        {activeTab === "LABOR" && (
-          <View>
-            <Text style={styles.sectionHeader}>Mark Attendance (Today)</Text>
-            {workers.map((worker) => (
-              <Card key={worker.id} style={styles.workerRow}>
-                <View>
-                  <Text style={styles.workerName}>{worker.name}</Text>
-                  <Text style={styles.workerWage}>₹{worker.dailyWage}/day</Text>
-                </View>
-                {isPresentToday(worker.id) ? (
-                  <Badge label="Present" variant="success" />
-                ) : (
-                  <Button
-                    title="Mark Present"
-                    onPress={() =>
-                      handleMarkAttendance(worker.id, worker.dailyWage)
-                    }
-                    style={{
-                      height: 36,
-                      paddingHorizontal: 12,
-                      marginVertical: 0,
-                    }}
-                  />
-                )}
-              </Card>
-            ))}
-            <Text style={styles.sectionHeader}>History</Text>
-            <Text style={{ color: Colors.textSecondary }}>
-              Total Man-days: {attendance.length}
-            </Text>
-          </View>
-        )}
-
-        {activeTab === "MATERIALS" && (
-          <View>
-            <Card>
-              <Text style={styles.cardHeader}>Add Expense</Text>
-              <Input
-                placeholder="Item Name (e.g. Cement)"
-                value={expenseName}
-                onChangeText={setExpenseName}
-              />
-              <Input
-                placeholder="Cost"
-                value={expenseCost}
-                onChangeText={setExpenseCost}
-                keyboardType="numeric"
-              />
-              <Button
-                title="Add"
-                onPress={handleAddExpense}
-                disabled={!expenseName || !expenseCost}
-              />
-            </Card>
-
-            <Text style={styles.sectionHeader}>Expense History</Text>
-            {expenses.map((e, idx) => (
-              <View key={idx} style={styles.expenseItem}>
-                <Text style={styles.expenseName}>{e.name}</Text>
-                <Text style={styles.expenseCost}>- ₹{e.cost}</Text>
-              </View>
-            ))}
-          </View>
-        )}
       </ScrollView>
-    </View>
+    </SafeAreaWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    padding: 16,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: Colors.primary,
-  },
-  subtitle: {
-    color: Colors.textSecondary,
-  },
-  tabs: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingBottom: 0,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: "center",
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
-  },
-  activeTab: {
-    borderBottomColor: Colors.primary,
-  },
-  tabText: {
-    fontWeight: "600",
-    color: Colors.textSecondary,
-  },
-  activeTabText: {
-    color: Colors.primary,
-  },
-  content: {
-    padding: 16,
-  },
-  cardHeader: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  statRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  statValue: {
-    fontWeight: "bold",
-  },
-  sectionHeader: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginVertical: 12,
-  },
-  workerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-    padding: 12,
-  },
-  workerName: {
-    fontWeight: "600",
-  },
-  workerWage: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-  },
-  expenseItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    backgroundColor: "#fff",
-  },
-  expenseName: {
-    fontSize: 16,
-  },
-  expenseCost: {
-    fontWeight: "bold",
-    color: Colors.error,
-  },
-});
