@@ -9,7 +9,6 @@ import { useSiteDetails } from "@/src/hooks/useSite";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import moment from "moment";
-import React from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function SiteDetailScreen() {

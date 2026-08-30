@@ -7,7 +7,7 @@ import { useStore } from '@/store/mockStore';
 import { Worker } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function WorkersListScreen() {

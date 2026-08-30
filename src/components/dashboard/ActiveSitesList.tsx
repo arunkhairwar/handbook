@@ -17,7 +17,7 @@ export default function ActiveSitesList() {
         <Text className="text-lg font-bold text-slate-800">
           Active Sites ({activeSites.length})
         </Text>
-        <TouchableOpacity onPress={() => router.push(AppRoutes.SITE as any)}>
+        <TouchableOpacity onPress={() => router.push(AppRoutes.ADMIN.SITES as any)}>
           <Text className="text-blue-600 font-semibold text-sm">View All</Text>
         </TouchableOpacity>
       </View>
