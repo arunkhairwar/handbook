@@ -36,7 +36,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(home)" />
       </Stack>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={"dark-content"} />
       <Toast config={getToastConfig(isDark)} visibilityTime={3000} />
     </QueryClientProvider>
   );
