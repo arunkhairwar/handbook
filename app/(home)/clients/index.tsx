@@ -5,7 +5,7 @@ import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
 import { FullScreenLoader } from "@/src/components/ui/FullScreenLoader";
 import { useClient } from "@/src/hooks/useClient";
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
 export default function ClientListScreen() {
   const { clients, isLoading, getAllClients, createClient } = useClient();
@@ -28,14 +28,14 @@ export default function ClientListScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-card">
       {isLoading ? (
         <FullScreenLoader message="loading clients..." />
       ) : (
         <FlatList
           data={clients}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           renderItem={({ item }) => <ClientTile client={item} />}
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={getAllClients} />
@@ -64,14 +64,3 @@ export default function ClientListScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  list: {
-    padding: 16,
-    flexGrow: 1,
-  },
-});

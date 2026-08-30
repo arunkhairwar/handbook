@@ -18,6 +18,14 @@ const workforceService = {
   },
 
   /**
+   * Get current user's workforce.
+   */
+  getMyWorkforce: async (): Promise<Workforce | null> => {
+    const response = await axiosInstance.get(ENDPOINTS.WORKFORCE.GET_MY);
+    return (response.data.data as Workforce) || null;
+  },
+
+  /**
    * Get all workforce workers (confirmed members) for a given workforce.
    */
   getWorkforceWorkers: async (workforceId: string): Promise<WorkforceWorker[]> => {

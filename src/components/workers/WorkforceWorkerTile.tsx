@@ -1,8 +1,7 @@
-import { Colors } from "@/constants/Colors";
 import { Badge } from "@/src/components/ui/Badge";
 import { WorkforceWorker, WorkerRole } from "@/src/types/worker.types";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 const ROLE_LABELS: Record<WorkerRole, string> = {
   HELPER: "Helper",
@@ -25,75 +24,25 @@ export function WorkforceWorkerTile({ worker }: WorkforceWorkerTileProps) {
   const initials = (worker.user.firstName[0] + (worker.user.lastName[0] ?? "")).toUpperCase();
 
   return (
-    <View style={styles.container}>
+    <View className="flex-row items-center bg-card rounded-xl p-3.5 mb-2.5 shadow-sm elevation-2">
       {/* Avatar */}
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>{initials}</Text>
+      <View className="w-11 h-11 rounded-full bg-primary/10 justify-center items-center mr-3">
+        <Text className="text-base font-bold text-primary">{initials}</Text>
       </View>
 
       {/* Info */}
-      <View style={styles.info}>
-        <Text style={styles.name}>{fullName}</Text>
-        <Text style={styles.mobile}>{worker.user.countryCode} {worker.user.mobile}</Text>
+      <View className="flex-1">
+        <Text className="text-base font-semibold text-text">{fullName}</Text>
+        <Text className="text-xs text-text-secondary mt-0.5">
+          {worker.user.countryCode} {worker.user.mobile}
+        </Text>
       </View>
 
       {/* Right side: role + wage */}
-      <View style={styles.right}>
+      <View className="items-end gap-1">
         <Badge title={ROLE_LABELS[worker.role]} variant="primary" />
-        <Text style={styles.wage}>₹{worker.wage}/day</Text>
+        <Text className="text-xs text-text-secondary font-medium">₹{worker.wage}/day</Text>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.primary + "22",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  avatarText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-  info: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: Colors.text,
-  },
-  mobile: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  right: {
-    alignItems: "flex-end",
-    gap: 4,
-  },
-  wage: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-    fontWeight: "500",
-  },
-});

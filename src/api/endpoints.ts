@@ -32,6 +32,7 @@ export const ENDPOINTS = {
   },
   WORKFORCE: {
     CREATE: "/workforces",
+    GET_MY: "/workforces",
     GET_WORKERS: (workforceId: string) => `/workforces/${workforceId}/workers`,
   },
   WORKFORCE_REQUEST: {

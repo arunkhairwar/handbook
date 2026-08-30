@@ -1,24 +1,23 @@
-import { Colors } from "@/constants/Colors";
+import { workforceAtom } from "@/src/atoms/workforce.atom";
+import { EmptyState } from "@/src/components/ui/EmptyState";
+import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
+import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import { CreateWorkforceModal } from "@/src/components/workers/CreateWorkforceModal";
 import { WorkerSearchBottomSheet } from "@/src/components/workers/WorkerSearchBottomSheet";
 import { WorkforceRequestsSheet } from "@/src/components/workers/WorkforceRequestsSheet";
 import { WorkforceWorkerTile } from "@/src/components/workers/WorkforceWorkerTile";
-import { EmptyState } from "@/src/components/ui/EmptyState";
-import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
-import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import {
+  useMyWorkforce,
   useSentWorkforceRequests,
   useWorkforceWorkers,
 } from "@/src/hooks";
-import { workforceAtom } from "@/src/atoms/workforce.atom";
 import { Workforce, WorkforceWorker } from "@/src/types/worker.types";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
-import React, { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   RefreshControl,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -35,6 +34,15 @@ export default function WorkersListScreen() {
 
   // Local search for filtering confirmed workforce members
   const [memberSearch, setMemberSearch] = useState("");
+
+  // Fetch current user's workforce from backend
+  const { data: myWorkforce, isLoading: isMyWorkforceLoading } = useMyWorkforce(!workforce);
+
+  useEffect(() => {
+    if (myWorkforce) {
+      setWorkforce(myWorkforce);
+    }
+  }, [myWorkforce, setWorkforce]);
 
   // Load workforce workers when workforce exists
   const {
@@ -70,7 +78,7 @@ export default function WorkersListScreen() {
   // ─── State 1: No workforce ───────────────────────────────────────────────
   if (!workforce) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 bg-background">
         <EmptyState
           iconName="people-outline"
           title="No Workforce Yet"
@@ -79,11 +87,11 @@ export default function WorkersListScreen() {
 
         <TouchableOpacity
           id="create-workforce-cta-btn"
-          style={styles.ctaButton}
+          className="flex-row items-center justify-center mx-8 mb-10 py-3.5 rounded-2xl bg-primary shadow-lg elevation-6"
           onPress={() => setShowCreateModal(true)}
         >
           <Ionicons name="add-circle-outline" size={22} color="#fff" style={{ marginRight: 8 }} />
-          <Text style={styles.ctaButtonText}>Create Workforce</Text>
+          <Text className="text-base font-bold text-white">Create Workforce</Text>
         </TouchableOpacity>
 
         <CreateWorkforceModal
@@ -97,30 +105,30 @@ export default function WorkersListScreen() {
 
   // ─── States 2 & 3: Workforce exists ─────────────────────────────────────
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-background">
       {/* Header: Search + Requests button */}
-      <View style={styles.headerBar}>
-        <View style={styles.searchBox}>
-          <Ionicons name="search-outline" size={16} color={Colors.textSecondary} style={{ marginRight: 6 }} />
+      <View className="flex-row items-center px-4 py-2.5 bg-card border-b border-border gap-2.5">
+        <View className="flex-1 flex-row items-center bg-background rounded-lg border border-border px-2.5 py-2">
+          <Ionicons name="search-outline" size={16} color="#64748B" style={{ marginRight: 6 }} />
           <TextInput
             id="workforce-member-search"
             placeholder="Search members..."
-            placeholderTextColor={Colors.textSecondary}
+            placeholderTextColor="#64748B"
             value={memberSearch}
             onChangeText={setMemberSearch}
-            style={styles.searchInput}
+            className="flex-1 text-sm text-text p-0"
           />
         </View>
 
         <TouchableOpacity
           id="view-requests-btn"
-          style={styles.requestsBtn}
+          className="relative w-10 h-10 rounded-full bg-primary/10 justify-center items-center"
           onPress={() => setShowRequestsSheet(true)}
         >
-          <Ionicons name="paper-plane-outline" size={20} color={Colors.primary} />
+          <Ionicons name="paper-plane-outline" size={20} color="#1E293B" />
           {pendingCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>
+            <View className="absolute top-0.5 right-0.5 min-w-[16px] h-4 rounded-full bg-error justify-center items-center px-1">
+              <Text className="text-[10px] font-bold text-white">
                 {pendingCount > 9 ? "9+" : pendingCount}
               </Text>
             </View>
@@ -130,9 +138,9 @@ export default function WorkersListScreen() {
 
       {/* Workforce name label */}
       {workforce.name ? (
-        <View style={styles.workforceLabel}>
-          <Text style={styles.workforceName}>{workforce.name}</Text>
-          <Text style={styles.workforceCount}>
+        <View className="flex-row justify-between items-center px-4 py-2.5 bg-primary/5">
+          <Text className="text-sm font-bold text-primary">{workforce.name}</Text>
+          <Text className="text-xs text-text-secondary">
             {allWorkers?.length ?? 0} / {workforce.maxMemberCount} members
           </Text>
         </View>
@@ -145,13 +153,13 @@ export default function WorkersListScreen() {
         <FlatList
           data={filteredWorkers}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           renderItem={({ item }) => <WorkforceWorkerTile worker={item} />}
           refreshControl={
             <RefreshControl
               refreshing={workersLoading}
               onRefresh={refetchWorkers}
-              tintColor={Colors.primary}
+              tintColor="#1E293B"
             />
           }
           ListEmptyComponent={
@@ -194,106 +202,3 @@ export default function WorkersListScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  // ── No-workforce CTA ──
-  ctaButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 32,
-    marginBottom: 40,
-    paddingVertical: 14,
-    borderRadius: 14,
-    backgroundColor: Colors.primary,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  ctaButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#fff",
-  },
-  // ── Header bar ──
-  headerBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    gap: 10,
-  },
-  searchBox: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.background,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: Colors.text,
-    padding: 0,
-  },
-  requestsBtn: {
-    position: "relative",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.primary + "15",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  badge: {
-    position: "absolute",
-    top: 2,
-    right: 2,
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: Colors.error,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 3,
-  },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: "700",
-    color: "#fff",
-  },
-  workforceLabel: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: Colors.primary + "08",
-  },
-  workforceName: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-  workforceCount: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-  },
-  list: {
-    padding: 16,
-    flexGrow: 1,
-  },
-});

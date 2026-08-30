@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* ─── Brand / Primary ─── */
+  --color-primary: #1E293B;
+  --color-primary-light: #334155;
+
+  /* ─── Accent ─── */
+  --color-accent: #F59E0B;
+  --color-accent-dark: #D97706;
+
+  /* ─── Backgrounds ─── */
+  --color-background: #F8FAFC;
+  --color-card: #FFFFFF;
+
+  /* ─── Text ─── */
+  --color-text: #0F172A;
+  --color-text-secondary: #64748B;
+
+  /* ─── Borders ─── */
+  --color-border: #E2E8F0;
+
+  /* ─── Semantic ─── */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-active-tab: #00BFA5;
+
+  /* ─── Tile: Client ─── */
+  --color-tile-client-bg: #E3F2FD;
+  --color-tile-client-border: #BBDEFB;
+  --color-tile-client-icon: #1976D2;
+  --color-tile-client-text: #0D47A1;
+
+  /* ─── Tile: Site ─── */
+  --color-tile-site-bg: #E0F2F1;
+  --color-tile-site-border: #B2DFDB;
+  --color-tile-site-icon: #00796B;
+  --color-tile-site-text: #004D40;
+
+  /* ─── Tile: Worker ─── */
+  --color-tile-worker-bg: #FFF3E0;
+  --color-tile-worker-border: #FFE0B2;
+  --color-tile-worker-icon: #F57C00;
+  --color-tile-worker-text: #E65100;
+}

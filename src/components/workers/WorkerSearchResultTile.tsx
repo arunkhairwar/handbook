@@ -1,14 +1,13 @@
-import { Colors } from "@/constants/Colors";
 import { WorkerSearchResult } from "@/src/types/worker.types";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   ActivityIndicator,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { cn } from "@/src/lib/utils";
 
 interface WorkerSearchResultTileProps {
   worker: WorkerSearchResult;
@@ -32,25 +31,38 @@ export function WorkerSearchResultTile({
   ).toUpperCase();
 
   return (
-    <View style={styles.container}>
+    <View className="flex-row items-center py-3 px-1 border-b border-border">
       {/* Avatar */}
-      <View style={[styles.avatar, requestSent && styles.avatarSent]}>
-        <Text style={[styles.avatarText, requestSent && styles.avatarTextSent]}>
+      <View
+        className={cn(
+          "w-10 h-10 rounded-full justify-center items-center mr-3",
+          requestSent ? "bg-success/15" : "bg-primary/10"
+        )}
+      >
+        <Text
+          className={cn(
+            "text-sm font-bold",
+            requestSent ? "text-success" : "text-primary"
+          )}
+        >
           {initials}
         </Text>
       </View>
 
       {/* Info */}
-      <View style={styles.info}>
-        <Text style={styles.name}>{fullName}</Text>
-        <Text style={styles.mobile}>
+      <View className="flex-1">
+        <Text className="text-base font-semibold text-text">{fullName}</Text>
+        <Text className="text-xs text-text-secondary mt-0.5">
           {worker.countryCode} {worker.mobile}
         </Text>
       </View>
 
       {/* Invite button */}
       <TouchableOpacity
-        style={[styles.inviteBtn, requestSent && styles.inviteBtnSent]}
+        className={cn(
+          "w-9 h-9 rounded-full justify-center items-center",
+          requestSent ? "bg-success/15" : "bg-primary"
+        )}
         onPress={() => !requestSent && onInvite(worker)}
         disabled={requestSent || isLoading}
         id={`invite-worker-${worker.id}`}
@@ -58,7 +70,7 @@ export function WorkerSearchResultTile({
         {isLoading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : requestSent ? (
-          <Ionicons name="checkmark" size={18} color={Colors.success} />
+          <Ionicons name="checkmark" size={18} color="#10B981" />
         ) : (
           <Ionicons name="add" size={20} color="#fff" />
         )}
@@ -66,58 +78,3 @@ export function WorkerSearchResultTile({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  avatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: Colors.primary + "22",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  avatarSent: {
-    backgroundColor: Colors.success + "22",
-  },
-  avatarText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-  avatarTextSent: {
-    color: Colors.success,
-  },
-  info: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: Colors.text,
-  },
-  mobile: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  inviteBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  inviteBtnSent: {
-    backgroundColor: Colors.success + "22",
-  },
-});

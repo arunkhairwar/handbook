@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/Colors";
 import { Input } from "@/src/components/ui/Input";
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import {
@@ -12,13 +11,13 @@ import {
   FlatList,
   Keyboard,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { WorkerSearchResultTile } from "./WorkerSearchResultTile";
+import { cn } from "@/src/lib/utils";
 
 type FilterType = "q" | "name" | "mobile" | "address";
 
@@ -118,18 +117,18 @@ export function WorkerSearchBottomSheet({
       transparent={false}
       onRequestClose={handleClose}
     >
-      <View style={styles.container}>
+      <View className="flex-1 bg-background">
         {/* Header */}
-        <View style={styles.header}>
+        <View className="flex-row items-center justify-between px-4 pt-14 pb-2 bg-card border-b border-border">
           <TouchableOpacity onPress={handleClose} id="close-worker-search-btn">
-            <Ionicons name="arrow-back" size={24} color={Colors.text} />
+            <Ionicons name="arrow-back" size={24} color="#0F172A" />
           </TouchableOpacity>
-          <Text style={styles.title}>Find Workers</Text>
+          <Text className="text-base font-bold text-text">Find Workers</Text>
           <View style={{ width: 24 }} />
         </View>
 
         {/* Search Bar */}
-        <View style={styles.searchWrapper}>
+        <View className="px-4 pt-3 bg-card">
           <Input
             id="worker-search-input"
             placeholder="Search workers..."
@@ -141,25 +140,25 @@ export function WorkerSearchBottomSheet({
         </View>
 
         {/* Filter Chips */}
-        <View style={styles.filters}>
+        <View className="flex-row px-4 pb-3 gap-2 bg-card border-b border-border">
           {FILTERS.map((f) => (
             <TouchableOpacity
               key={f.key}
               id={`filter-chip-${f.key}`}
-              style={[
-                styles.chip,
-                activeFilter === f.key && styles.chipActive,
-              ]}
+              className={cn(
+                "px-3.5 py-1.5 rounded-full",
+                activeFilter === f.key ? "bg-primary" : "bg-border"
+              )}
               onPress={() => {
                 setActiveFilter(f.key);
                 setDebouncedText(searchText);
               }}
             >
               <Text
-                style={[
-                  styles.chipText,
-                  activeFilter === f.key && styles.chipTextActive,
-                ]}
+                className={cn(
+                  "text-xs font-medium",
+                  activeFilter === f.key ? "text-white" : "text-text-secondary"
+                )}
               >
                 {f.label}
               </Text>
@@ -171,9 +170,9 @@ export function WorkerSearchBottomSheet({
         {isLoading ? (
           <LoadingSpinner message="Searching..." />
         ) : debouncedText.length === 0 ? (
-          <View style={styles.emptyHint}>
-            <Ionicons name="search-outline" size={48} color={Colors.border} />
-            <Text style={styles.emptyHintText}>
+          <View className="flex-1 items-center justify-center pt-20 gap-3">
+            <Ionicons name="search-outline" size={48} color="#E2E8F0" />
+            <Text className="text-sm text-text-secondary text-center">
               Type a name or mobile to search workers
             </Text>
           </View>
@@ -181,7 +180,7 @@ export function WorkerSearchBottomSheet({
           <FlatList
             data={workers}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
             renderItem={({ item }) => (
               <WorkerSearchResultTile
                 worker={item}
@@ -193,8 +192,8 @@ export function WorkerSearchBottomSheet({
             onEndReached={() => hasNextPage && fetchNextPage()}
             onEndReachedThreshold={0.3}
             ListEmptyComponent={
-              <View style={styles.emptyHint}>
-                <Text style={styles.emptyHintText}>No workers found</Text>
+              <View className="flex-1 items-center justify-center pt-20 gap-3">
+                <Text className="text-sm text-text-secondary text-center">No workers found</Text>
               </View>
             }
             ListFooterComponent={
@@ -205,81 +204,7 @@ export function WorkerSearchBottomSheet({
             keyboardShouldPersistTaps="handled"
           />
         )}
-
-        {/* TODO: Backend should filter out workers already in the workforce
-            or with a pending request (workforceId filter param not yet supported) */}
       </View>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 56,
-    paddingBottom: 8,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: Colors.text,
-  },
-  searchWrapper: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    backgroundColor: "#fff",
-  },
-  filters: {
-    flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    gap: 8,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: Colors.border,
-  },
-  chipActive: {
-    backgroundColor: Colors.primary,
-  },
-  chipText: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: Colors.textSecondary,
-  },
-  chipTextActive: {
-    color: "#fff",
-  },
-  list: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 24,
-  },
-  emptyHint: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 80,
-    gap: 12,
-  },
-  emptyHintText: {
-    fontSize: 15,
-    color: Colors.textSecondary,
-    textAlign: "center",
-  },
-});

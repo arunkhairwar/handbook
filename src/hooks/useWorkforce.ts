@@ -13,8 +13,20 @@ export const useCreateWorkforce = () => {
     mutationFn: (data: CreateWorkforceData) =>
       workforceService.createWorkforce(data),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["my-workforce"] });
       queryClient.invalidateQueries({ queryKey: ["workforce-workers"] });
     },
+  });
+};
+
+/**
+ * Query to get current user's workforce.
+ */
+export const useMyWorkforce = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["my-workforce"],
+    queryFn: () => workforceService.getMyWorkforce(),
+    enabled,
   });
 };
 

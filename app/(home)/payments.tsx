@@ -3,12 +3,11 @@ import { Button } from '@/src/components/ui/Button';
 import { Card } from '@/src/components/ui/Card';
 import { Input } from '@/src/components/ui/Input';
 import { FloatingActionButton } from '@/src/components/ui/FloatingActionButton';
-import { Colors } from '@/constants/Colors';
 import { useStore } from '@/store/mockStore';
 import { Payment } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { cn } from '@/src/lib/utils';
 
 export default function PaymentsScreen() {
     const { payments, sites, addPayment } = useStore();
@@ -48,11 +47,6 @@ export default function PaymentsScreen() {
             const site = sites.find(s => s.id === item.relatedId);
             return site ? site.name : 'Unknown Site';
         } else {
-            // Expense (Worker Payment) - we need worker list but I can't access it easily without selecting all
-            // For now just show "Worker Payment" or handle in store with a getter?
-            // I'll just say "Worker/Material"
-            // Actually store has workers. check `useStore` hook usage.
-            // I can access workers from store.
             const workers = useStore.getState().workers;
             const worker = workers.find(w => w.id === item.relatedId);
             return worker ? worker.name : 'Worker Payment';
@@ -60,14 +54,14 @@ export default function PaymentsScreen() {
     };
 
     const renderItem = ({ item }: { item: Payment }) => (
-        <Card style={styles.card}>
-            <View style={styles.row}>
+        <Card className="mb-2 p-3">
+            <View className="flex-row justify-between items-center">
                 <View>
-                    <Text style={styles.relatedName}>{getRelatedName(item)}</Text>
-                    <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
+                    <Text className="text-base font-bold text-text">{getRelatedName(item)}</Text>
+                    <Text className="text-xs text-text-secondary">{new Date(item.date).toLocaleDateString()}</Text>
                 </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={[styles.amount, { color: item.type === 'INCOME' ? Colors.success : Colors.error }]}>
+                <View className="items-end">
+                    <Text className={cn("text-base font-bold mb-1", item.type === 'INCOME' ? "text-success" : "text-error")}>
                         {item.type === 'INCOME' ? '+' : '-'} ₹{item.amount}
                     </Text>
                     <Badge label={item.mode} />
@@ -77,33 +71,36 @@ export default function PaymentsScreen() {
     );
 
     return (
-        <View style={styles.container}>
-            <View style={styles.filters}>
-                <TouchableOpacity
-                    style={[styles.filterChip, filter === 'ALL' && styles.activeFilter]}
-                    onPress={() => setFilter('ALL')}
-                >
-                    <Text style={[styles.filterText, filter === 'ALL' && styles.activeFilterText]}>All</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.filterChip, filter === 'INCOME' && styles.activeFilter]}
-                    onPress={() => setFilter('INCOME')}
-                >
-                    <Text style={[styles.filterText, filter === 'INCOME' && styles.activeFilterText]}>Income</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.filterChip, filter === 'EXPENSE' && styles.activeFilter]}
-                    onPress={() => setFilter('EXPENSE')}
-                >
-                    <Text style={[styles.filterText, filter === 'EXPENSE' && styles.activeFilterText]}>Expense</Text>
-                </TouchableOpacity>
+        <View className="flex-1 bg-background">
+            <View className="flex-row p-4 pb-0 gap-2">
+                {(['ALL', 'INCOME', 'EXPENSE'] as const).map((tab) => (
+                    <TouchableOpacity
+                        key={tab}
+                        className={cn(
+                            "px-4 py-2 rounded-full border",
+                            filter === tab
+                                ? "bg-primary border-primary"
+                                : "bg-card border-border"
+                        )}
+                        onPress={() => setFilter(tab)}
+                    >
+                        <Text
+                            className={cn(
+                                "text-sm font-semibold capitalize",
+                                filter === tab ? "text-white" : "text-text-secondary"
+                            )}
+                        >
+                            {tab === 'ALL' ? 'All' : tab === 'INCOME' ? 'Income' : 'Expense'}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
             </View>
 
             <FlatList
                 data={filteredPayments}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
-                contentContainerStyle={styles.list}
+                contentContainerStyle={{ padding: 16 }}
             />
 
             <FloatingActionButton
@@ -114,9 +111,9 @@ export default function PaymentsScreen() {
 
             {/* Add Income Modal */}
             <Modal visible={modalVisible} animationType="slide" transparent>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Receive Payment (Income)</Text>
+                <View className="flex-1 bg-black/50 justify-center p-6">
+                    <View className="bg-card rounded-2xl p-6">
+                        <Text className="text-lg font-bold text-text mb-4">Receive Payment (Income)</Text>
                         <Input
                             label="Amount"
                             value={amount}
@@ -124,38 +121,59 @@ export default function PaymentsScreen() {
                             keyboardType="numeric"
                         />
 
-                        <Text style={{ fontWeight: '500', marginBottom: 8 }}>Select Site</Text>
-                        <View style={{ marginBottom: 16 }}>
+                        <Text className="font-medium text-text mb-2">Select Site</Text>
+                        <View className="mb-4">
                             {sites.map(site => (
                                 <TouchableOpacity
                                     key={site.id}
-                                    style={[styles.siteOption, selectedSiteId === site.id && styles.selectedSite]}
+                                    className={cn(
+                                        "p-2.5 border rounded-lg mb-2",
+                                        selectedSiteId === site.id
+                                            ? "bg-primary border-primary"
+                                            : "border-border bg-card"
+                                    )}
                                     onPress={() => setSelectedSiteId(site.id)}
                                 >
-                                    <Text style={[styles.siteText, selectedSiteId === site.id && { color: '#fff' }]}>{site.name}</Text>
+                                    <Text
+                                        className={cn(
+                                            "text-sm font-medium",
+                                            selectedSiteId === site.id ? "text-white" : "text-text"
+                                        )}
+                                    >
+                                        {site.name}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
 
-                        <Text style={{ fontWeight: '500', marginBottom: 8 }}>Mode</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
-                            {['CASH', 'UPI', 'BANK'].map((mode) => (
+                        <Text className="font-medium text-text mb-2">Mode</Text>
+                        <View className="flex-row justify-between mb-4 gap-2">
+                            {(['CASH', 'UPI', 'BANK'] as const).map((mode) => (
                                 <TouchableOpacity
                                     key={mode}
-                                    onPress={() => setPaymentMode(mode as any)}
-                                    style={[
-                                        styles.modeButton,
-                                        paymentMode === mode && { backgroundColor: Colors.primary, borderColor: Colors.primary }
-                                    ]}
+                                    onPress={() => setPaymentMode(mode)}
+                                    className={cn(
+                                        "flex-1 items-center py-2.5 px-2 border rounded-lg",
+                                        paymentMode === mode
+                                            ? "bg-primary border-primary"
+                                            : "border-border bg-card"
+                                    )}
                                 >
-                                    <Text style={[styles.modeText, paymentMode === mode && { color: '#fff' }]}>{mode}</Text>
+                                    <Text
+                                        className={cn(
+                                            "text-xs font-semibold",
+                                            paymentMode === mode ? "text-white" : "text-text"
+                                        )}
+                                    >
+                                        {mode}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
 
-                        <View style={styles.modalActions}>
-                            <Button title="Cancel" variant="outline" onPress={() => setModalVisible(false)} style={{ flex: 1, marginRight: 8 }} />
-                            <Button title="Save" onPress={handleAddIncome} style={{ flex: 1, marginLeft: 8 }} disabled={!amount || !selectedSiteId} />
+                        <View className="flex-row mt-4 gap-2">
+                            <Button title="Cancel" variant="outline" onPress={() => setModalVisible(false)} className="flex-1" />
+                            <Button title="Save" onPress={handleAddIncome} className="flex-1" disabled={!amount || !selectedSiteId} />
                         </View>
                     </View>
                 </View>
@@ -163,31 +181,3 @@ export default function PaymentsScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: Colors.background },
-    filters: { flexDirection: 'row', padding: 16, paddingBottom: 0 },
-    filterChip: {
-        paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: Colors.card, marginRight: 8, borderWidth: 1, borderColor: Colors.border
-    },
-    activeFilter: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-    filterText: { color: Colors.textSecondary, fontWeight: '600' },
-    activeFilterText: { color: '#fff' },
-    list: { padding: 16 },
-    card: { marginBottom: 8, padding: 12 },
-    row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    relatedName: { fontSize: 16, fontWeight: 'bold' },
-    date: { fontSize: 12, color: Colors.textSecondary },
-    amount: { fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
-    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 24 },
-    modalContent: { backgroundColor: '#fff', borderRadius: 16, padding: 24 },
-    modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-    siteOption: { padding: 10, borderWidth: 1, borderColor: Colors.border, borderRadius: 8, marginBottom: 8 },
-    selectedSite: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-    siteText: { fontSize: 14 },
-    modalActions: { flexDirection: 'row', marginTop: 16 },
-    modeButton: {
-        flex: 1, alignItems: 'center', padding: 10, borderWidth: 1, borderColor: Colors.border, borderRadius: 8, marginHorizontal: 4
-    },
-    modeText: { fontSize: 12, fontWeight: '600' }
-});

@@ -1,6 +1,6 @@
-import { Colors } from "@/constants/Colors";
 import React from "react";
-import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Text, View, ViewStyle } from "react-native";
+import { cn } from "@/src/lib/utils";
 
 type BadgeVariant =
   | "default"
@@ -20,41 +20,47 @@ interface BadgeProps {
   variant?: BadgeVariant;
   textTransform?: BadgeTextTransform;
   style?: ViewStyle;
+  className?: string;
 }
 
-const variantStyles: Record<
+const variantClasses: Record<
   BadgeVariant,
-  { backgroundColor: string; textColor: string; borderColor?: string }
+  { container: string; text: string }
 > = {
   default: {
-    backgroundColor: Colors.border,
-    textColor: Colors.text,
+    container: "bg-border",
+    text: "text-text",
   },
   primary: {
-    backgroundColor: "#EFF6FF", // Blue 50
-    textColor: "#1E40AF", // Blue 800
+    container: "bg-blue-50",
+    text: "text-blue-800",
   },
   success: {
-    backgroundColor: "#DCFCE7", // Green 100
-    textColor: "#166534", // Green 800
+    container: "bg-emerald-100",
+    text: "text-emerald-800",
   },
   warning: {
-    backgroundColor: "#FEF3C7", // Amber 100
-    textColor: "#92400E", // Amber 800
+    container: "bg-amber-100",
+    text: "text-amber-800",
   },
   error: {
-    backgroundColor: "#FEE2E2", // Red 100
-    textColor: "#991B1B", // Red 800
+    container: "bg-red-100",
+    text: "text-red-800",
   },
   info: {
-    backgroundColor: "#E0F2FE", // Sky 100
-    textColor: "#075985", // Sky 800
+    container: "bg-sky-100",
+    text: "text-sky-800",
   },
   outline: {
-    backgroundColor: "transparent",
-    textColor: Colors.primary,
-    borderColor: Colors.primary,
+    container: "bg-transparent border border-primary",
+    text: "text-primary",
   },
+};
+
+const textTransformClasses: Record<BadgeTextTransform, string> = {
+  capitalize: "capitalize",
+  lowercase: "lowercase",
+  uppercase: "uppercase",
 };
 
 export function Badge({
@@ -63,35 +69,29 @@ export function Badge({
   variant = "default",
   textTransform = "capitalize",
   style,
+  className,
 }: BadgeProps) {
   const displayText = title ?? label ?? "";
-  const { backgroundColor, textColor, borderColor } = variantStyles[variant];
+  const { container, text } = variantClasses[variant];
 
   return (
     <View
-      style={[
-        styles.badge,
-        { backgroundColor },
-        borderColor ? { borderWidth: 1, borderColor } : undefined,
-        style,
-      ]}
+      className={cn(
+        "px-3 py-1 rounded-full items-center justify-center",
+        container,
+        className
+      )}
+      style={style}
     >
-      <Text style={[styles.text, { color: textColor, textTransform }]}>
+      <Text
+        className={cn(
+          "text-xs font-semibold",
+          text,
+          textTransformClasses[textTransform]
+        )}
+      >
         {displayText}
       </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
-    // alignSelf: "flex-start",
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-});

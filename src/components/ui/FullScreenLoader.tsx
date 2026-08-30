@@ -3,11 +3,10 @@ import {
   View,
   ActivityIndicator,
   Text,
-  StyleSheet,
   ViewStyle,
   StyleProp,
 } from "react-native";
-import { Colors } from "@/constants/Colors";
+import { cn } from "@/src/lib/utils";
 
 interface FullScreenLoaderProps {
   size?: number | "small" | "large";
@@ -19,32 +18,22 @@ interface FullScreenLoaderProps {
 
 export const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({
   size = "large",
-  color = Colors.primary,
+  color = "#1E293B",
   className = "",
   style,
   message,
 }) => {
   return (
-    <View style={[styles.container, style]} className={className}>
+    <View
+      className={cn("flex-1 justify-center items-center", className)}
+      style={style}
+    >
       <ActivityIndicator size={size} color={color} />
       {message ? (
-        <Text style={styles.message} className="mt-4 text-center text-gray-500">
+        <Text className="mt-4 text-center text-text-secondary text-sm">
           {message}
         </Text>
       ) : null}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  message: {
-    marginTop: 16,
-    color: "#666",
-    textAlign: "center",
-  },
-});

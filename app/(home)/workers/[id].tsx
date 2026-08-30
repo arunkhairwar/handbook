@@ -1,4 +1,3 @@
-import { Colors } from '@/constants/Colors';
 import { Button } from '@/src/components/ui/Button';
 import { Card } from '@/src/components/ui/Card';
 import { Input } from '@/src/components/ui/Input';
@@ -6,7 +5,8 @@ import { useStore } from '@/store/mockStore';
 import { Payment } from '@/types';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { cn } from '@/src/lib/utils';
 
 export default function WorkerProfileScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,7 +19,7 @@ export default function WorkerProfileScreen() {
     const [amount, setAmount] = useState('');
     const [paymentMode, setPaymentMode] = useState<'CASH' | 'UPI' | 'BANK'>('CASH');
 
-    if (!worker) return <View style={styles.center}><Text>Worker not found</Text></View>;
+    if (!worker) return <View className="flex-1 justify-center items-center"><Text className="text-text-secondary">Worker not found</Text></View>;
 
     const totalEarned = attendance.reduce((acc, a) => acc + a.wageSnapshot, 0);
     const totalPaid = payments.reduce((acc, p) => acc + p.amount, 0);
@@ -44,29 +44,29 @@ export default function WorkerProfileScreen() {
     };
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Card style={styles.profileCard}>
-                <View style={styles.avatar}>
-                    <Text style={styles.avatarText}>{worker.name.charAt(0)}</Text>
+        <ScrollView className="flex-1 bg-background" contentContainerStyle={{ padding: 16 }}>
+            <Card className="items-center mb-5 p-4">
+                <View className="w-16 h-16 rounded-full bg-border justify-center items-center mb-3">
+                    <Text className="text-2xl font-bold text-text-secondary">{worker.name.charAt(0)}</Text>
                 </View>
-                <Text style={styles.name}>{worker.name}</Text>
-                <Text style={styles.role}>{worker.role}</Text>
-                <Text style={styles.role}>{worker.mobile}</Text>
+                <Text className="text-xl font-bold text-text">{worker.name}</Text>
+                <Text className="text-sm text-text-secondary mb-1">{worker.role}</Text>
+                <Text className="text-sm text-text-secondary">{worker.mobile}</Text>
             </Card>
 
-            <Card>
-                <Text style={styles.cardHeader}>Financials</Text>
-                <View style={styles.statRow}>
-                    <Text>Total Work Value</Text>
-                    <Text style={styles.statValue}>₹{totalEarned}</Text>
+            <Card className="mb-4 p-4">
+                <Text className="text-base font-bold text-text mb-3">Financials</Text>
+                <View className="flex-row justify-between mb-2">
+                    <Text className="text-sm text-text">Total Work Value</Text>
+                    <Text className="text-sm font-bold text-text">₹{totalEarned}</Text>
                 </View>
-                <View style={styles.statRow}>
-                    <Text>Total Paid</Text>
-                    <Text style={[styles.statValue, { color: Colors.success }]}>₹{totalPaid}</Text>
+                <View className="flex-row justify-between mb-2">
+                    <Text className="text-sm text-text">Total Paid</Text>
+                    <Text className="text-sm font-bold text-success">₹{totalPaid}</Text>
                 </View>
-                <View style={[styles.statRow, { borderTopWidth: 1, borderColor: Colors.border, paddingTop: 8, marginTop: 8 }]}>
-                    <Text style={{ fontWeight: 'bold' }}>Pending Balance</Text>
-                    <Text style={[styles.statValue, { color: balance > 0 ? Colors.error : Colors.success }]}>
+                <View className="flex-row justify-between border-t border-border pt-2 mt-2">
+                    <Text className="text-sm font-bold text-text">Pending Balance</Text>
+                    <Text className={cn("text-sm font-bold", balance > 0 ? "text-error" : "text-success")}>
                         ₹{balance}
                     </Text>
                 </View>
@@ -74,30 +74,30 @@ export default function WorkerProfileScreen() {
                 <Button
                     title="Make Payment"
                     onPress={() => setModalVisible(true)}
-                    style={{ marginTop: 16 }}
+                    className="mt-4"
                 />
             </Card>
 
-            <Text style={styles.sectionHeader}>Payment History</Text>
+            <Text className="text-lg font-bold my-3 text-primary">Payment History</Text>
             {payments.length === 0 ? (
-                <Text style={{ color: Colors.textSecondary }}>No payments recorded.</Text>
+                <Text className="text-sm text-text-secondary">No payments recorded.</Text>
             ) : (
                 payments.map(p => (
-                    <Card key={p.id} style={styles.paymentCard}>
-                        <View style={styles.row}>
-                            <Text style={styles.paymentDate}>{new Date(p.date).toLocaleDateString()}</Text>
-                            <Text style={styles.paymentAmount}>₹{p.amount}</Text>
+                    <Card key={p.id} className="mb-2 p-3">
+                        <View className="flex-row justify-between">
+                            <Text className="text-sm text-text-secondary">{new Date(p.date).toLocaleDateString()}</Text>
+                            <Text className="text-base font-bold text-success">₹{p.amount}</Text>
                         </View>
-                        <Text style={styles.paymentMode}>{p.mode}</Text>
+                        <Text className="text-xs text-text-secondary mt-1 uppercase">{p.mode}</Text>
                     </Card>
                 ))
             )}
 
             {/* Payment Modal */}
             <Modal visible={modalVisible} animationType="fade" transparent>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Record Payment to {worker.name}</Text>
+                <View className="flex-1 bg-black/50 justify-center p-6">
+                    <View className="bg-card rounded-2xl p-6">
+                        <Text className="text-lg font-bold text-text mb-4">Record Payment to {worker.name}</Text>
                         <Input
                             label="Amount"
                             value={amount}
@@ -105,25 +105,34 @@ export default function WorkerProfileScreen() {
                             keyboardType="numeric"
                         />
 
-                        <Text style={{ fontWeight: '500', marginBottom: 8 }}>Mode</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
-                            {['CASH', 'UPI', 'BANK'].map((mode) => (
+                        <Text className="font-medium text-text mb-2">Mode</Text>
+                        <View className="flex-row justify-between mb-4 gap-2">
+                            {(['CASH', 'UPI', 'BANK'] as const).map((mode) => (
                                 <TouchableOpacity
                                     key={mode}
-                                    onPress={() => setPaymentMode(mode as any)}
-                                    style={[
-                                        styles.modeButton,
-                                        paymentMode === mode && { backgroundColor: Colors.primary, borderColor: Colors.primary }
-                                    ]}
+                                    onPress={() => setPaymentMode(mode)}
+                                    className={cn(
+                                        "flex-1 items-center py-2.5 px-2 border rounded-lg",
+                                        paymentMode === mode
+                                            ? "bg-primary border-primary"
+                                            : "border-border bg-card"
+                                    )}
                                 >
-                                    <Text style={[styles.modeText, paymentMode === mode && { color: '#fff' }]}>{mode}</Text>
+                                    <Text
+                                        className={cn(
+                                            "text-xs font-semibold",
+                                            paymentMode === mode ? "text-white" : "text-text"
+                                        )}
+                                    >
+                                        {mode}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
 
-                        <View style={styles.modalActions}>
-                            <Button title="Cancel" variant="outline" onPress={() => setModalVisible(false)} style={{ flex: 1, marginRight: 8 }} />
-                            <Button title="Save" onPress={handleAddPayment} style={{ flex: 1, marginLeft: 8 }} />
+                        <View className="flex-row mt-4 gap-2">
+                            <Button title="Cancel" variant="outline" onPress={() => setModalVisible(false)} className="flex-1" />
+                            <Button title="Save" onPress={handleAddPayment} className="flex-1" />
                         </View>
                     </View>
                 </View>
@@ -132,35 +141,3 @@ export default function WorkerProfileScreen() {
         </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1 },
-    content: { padding: 16 },
-    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    profileCard: { alignItems: 'center', marginBottom: 20 },
-    avatar: {
-        width: 60, height: 60, borderRadius: 30, backgroundColor: Colors.border,
-        justifyContent: 'center', alignItems: 'center', marginBottom: 12
-    },
-    avatarText: { fontSize: 24, fontWeight: 'bold', color: Colors.textSecondary },
-    name: { fontSize: 20, fontWeight: 'bold' },
-    role: { fontSize: 14, color: Colors.textSecondary, marginBottom: 4 },
-    cardHeader: { fontSize: 16, fontWeight: 'bold', marginBottom: 12 },
-    statRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-    statValue: { fontWeight: 'bold' },
-    sectionHeader: { fontSize: 18, fontWeight: 'bold', marginVertical: 12, color: Colors.primary },
-    paymentCard: { marginBottom: 8, padding: 12 },
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    paymentDate: { fontSize: 14, color: Colors.textSecondary },
-    paymentAmount: { fontSize: 16, fontWeight: 'bold', color: Colors.success },
-    paymentMode: { fontSize: 12, color: Colors.textSecondary, marginTop: 4, textTransform: 'uppercase' },
-
-    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 24 },
-    modalContent: { backgroundColor: '#fff', borderRadius: 16, padding: 24 },
-    modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-    modalActions: { flexDirection: 'row', marginTop: 16 },
-    modeButton: {
-        flex: 1, alignItems: 'center', padding: 10, borderWidth: 1, borderColor: Colors.border, borderRadius: 8, marginHorizontal: 4
-    },
-    modeText: { fontSize: 12, fontWeight: '600' }
-});

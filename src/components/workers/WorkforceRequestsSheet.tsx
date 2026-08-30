@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/Colors";
 import { Badge } from "@/src/components/ui/Badge";
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import {
@@ -12,7 +11,6 @@ import {
   Alert,
   FlatList,
   Modal,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -91,19 +89,19 @@ export function WorkforceRequestsSheet({
     ).toUpperCase();
 
     return (
-      <View style={styles.card}>
+      <View className="flex-row items-center justify-between bg-card rounded-xl p-3.5 mb-2.5 shadow-sm elevation-2">
         {/* Avatar + info */}
-        <View style={styles.left}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{initials}</Text>
+        <View className="flex-row items-center flex-1">
+          <View className="w-10 h-10 rounded-full bg-primary/10 justify-center items-center mr-3">
+            <Text className="text-sm font-bold text-primary">{initials}</Text>
           </View>
-          <View style={styles.info}>
-            <Text style={styles.name}>{fullName}</Text>
-            <Text style={styles.mobile}>
+          <View className="flex-1">
+            <Text className="text-base font-semibold text-text">{fullName}</Text>
+            <Text className="text-xs text-text-secondary mt-0.5">
               {item.receiver.countryCode} {item.receiver.mobile}
             </Text>
             {item.status === "REJECTED" && item.rejectionReason ? (
-              <Text style={styles.reason} numberOfLines={2}>
+              <Text className="text-xs text-error mt-1 italic" numberOfLines={2}>
                 Reason: {item.rejectionReason}
               </Text>
             ) : null}
@@ -111,7 +109,7 @@ export function WorkforceRequestsSheet({
         </View>
 
         {/* Right: status + cancel */}
-        <View style={styles.right}>
+        <View className="items-end gap-1.5 ml-2">
           <Badge
             title={STATUS_LABEL[item.status]}
             variant={STATUS_VARIANT[item.status]}
@@ -119,11 +117,11 @@ export function WorkforceRequestsSheet({
           {item.status === "PENDING" && (
             <TouchableOpacity
               id={`cancel-request-${item.id}`}
-              style={styles.cancelBtn}
+              className="p-0.5"
               onPress={() => handleCancel(item)}
               disabled={isCancelling}
             >
-              <Ionicons name="close-circle-outline" size={22} color={Colors.error} />
+              <Ionicons name="close-circle-outline" size={22} color="#EF4444" />
             </TouchableOpacity>
           )}
         </View>
@@ -138,15 +136,15 @@ export function WorkforceRequestsSheet({
       transparent={false}
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
+      <View className="flex-1 bg-background">
         {/* Header */}
-        <View style={styles.header}>
+        <View className="flex-row items-center justify-between px-4 pt-14 pb-3 bg-card border-b border-border">
           <TouchableOpacity onPress={onClose} id="close-requests-sheet-btn">
-            <Ionicons name="arrow-back" size={24} color={Colors.text} />
+            <Ionicons name="arrow-back" size={24} color="#0F172A" />
           </TouchableOpacity>
-          <Text style={styles.title}>Sent Requests</Text>
+          <Text className="text-base font-bold text-text">Sent Requests</Text>
           <TouchableOpacity onPress={() => refetch()} id="refresh-requests-btn">
-            <Ionicons name="refresh-outline" size={22} color={Colors.primary} />
+            <Ionicons name="refresh-outline" size={22} color="#1E293B" />
           </TouchableOpacity>
         </View>
 
@@ -156,16 +154,16 @@ export function WorkforceRequestsSheet({
           <FlatList
             data={requests ?? []}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
             renderItem={renderItem}
             ListEmptyComponent={
-              <View style={styles.empty}>
+              <View className="items-center justify-center pt-24 gap-3">
                 <Ionicons
                   name="paper-plane-outline"
                   size={48}
-                  color={Colors.border}
+                  color="#E2E8F0"
                 />
-                <Text style={styles.emptyText}>No requests sent yet</Text>
+                <Text className="text-sm text-text-secondary">No requests sent yet</Text>
               </View>
             }
           />
@@ -174,99 +172,3 @@ export function WorkforceRequestsSheet({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 56,
-    paddingBottom: 12,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  title: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: Colors.text,
-  },
-  list: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  avatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: Colors.primary + "22",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  avatarText: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: Colors.primary,
-  },
-  info: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: Colors.text,
-  },
-  mobile: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  reason: {
-    fontSize: 12,
-    color: Colors.error,
-    marginTop: 4,
-    fontStyle: "italic",
-  },
-  right: {
-    alignItems: "flex-end",
-    gap: 6,
-  },
-  cancelBtn: {
-    padding: 2,
-  },
-  empty: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 100,
-    gap: 12,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: Colors.textSecondary,
-  },
-});

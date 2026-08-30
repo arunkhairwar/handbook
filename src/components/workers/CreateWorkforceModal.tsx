@@ -1,4 +1,3 @@
-import { Colors } from "@/constants/Colors";
 import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
 import { useCreateWorkforce } from "@/src/hooks/useWorkforce";
@@ -9,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -70,28 +68,31 @@ export function CreateWorkforceModal({
       animationType="slide"
       transparent
       onRequestClose={onClose}
+      statusBarTranslucent
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.overlay} />
-      </TouchableWithoutFeedback>
-
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.sheetWrapper}
+        behavior="padding"
+        className="flex-1 justify-end"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        <View style={styles.sheet}>
+        {/* Tap overlay to dismiss */}
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View className="flex-1 bg-black/45" />
+        </TouchableWithoutFeedback>
+
+        <View className="bg-card rounded-t-3xl p-6 pb-10">
           {/* Handle */}
-          <View style={styles.handle} />
+          <View className="w-10 h-1 bg-border rounded-full self-center mb-4" />
 
           {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Create Your Workforce</Text>
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-xl font-bold text-text">Create Your Workforce</Text>
             <TouchableOpacity onPress={onClose} id="close-create-workforce-modal">
-              <Text style={styles.closeBtn}>✕</Text>
+              <Text className="text-lg text-text-secondary p-1">✕</Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.subtitle}>
+          <Text className="text-sm text-text-secondary mb-4">
             Give your team a name and set how many workers can join.
           </Text>
 
@@ -117,13 +118,13 @@ export function CreateWorkforceModal({
             title={isPending ? "Creating..." : "Create Workforce"}
             onPress={handleCreate}
             disabled={isPending}
-            style={styles.submitBtn}
+            className="mt-2"
           />
 
           {isPending && (
             <ActivityIndicator
-              style={{ marginTop: 8 }}
-              color={Colors.primary}
+              className="mt-2"
+              color="#1E293B"
             />
           )}
         </View>
@@ -131,55 +132,3 @@ export function CreateWorkforceModal({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.45)",
-  },
-  sheetWrapper: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  sheet: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    paddingBottom: 40,
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: Colors.border,
-    borderRadius: 2,
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.text,
-  },
-  closeBtn: {
-    fontSize: 18,
-    color: Colors.textSecondary,
-    padding: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    marginBottom: 16,
-  },
-  submitBtn: {
-    marginTop: 8,
-  },
-});
