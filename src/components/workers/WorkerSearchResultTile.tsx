@@ -23,12 +23,12 @@ export function WorkerSearchResultTile({
   onInvite,
   isLoading = false,
 }: WorkerSearchResultTileProps) {
-  const fullName = [worker.firstName, worker.middleName, worker.lastName]
+  const fullName = [worker?.firstName, worker?.middleName, worker?.lastName]
     .filter(Boolean)
     .join(" ");
   const initials = (
-    worker.firstName[0] + (worker.lastName[0] ?? "")
-  ).toUpperCase();
+    (worker?.firstName?.[0] ?? "") + (worker?.lastName?.[0] ?? "")
+  ).toUpperCase() || "?";
 
   return (
     <View className="flex-row items-center py-3 px-1 border-b border-border">

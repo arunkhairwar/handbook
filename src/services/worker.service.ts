@@ -1,21 +1,22 @@
 import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
-import { WorkerSearchQuery } from "../types/worker.types";
+import { CursorPaginatedResponse } from "../types/shared/api.types";
+import { WorkerSearchQuery, WorkerSearchResult } from "../types/worker.types";
 
 const workerService = {
   /**
    * Search for workers (users with availableForWork: true).
-   * Returns a paginated result: { results, nextCursor, hasNextPage }
+   * Returns a cursor-paginated result: { success, message, data, meta: { pagination } }
    */
-  searchWorker: async (query: WorkerSearchQuery) => {
-    const response = await axiosInstance.get(ENDPOINTS.WORKER.SEARCH, {
+  searchWorker: async (
+    query: WorkerSearchQuery
+  ): Promise<CursorPaginatedResponse<WorkerSearchResult>> => {
+    const response = await axiosInstance.get<
+      CursorPaginatedResponse<WorkerSearchResult>
+    >(ENDPOINTS.WORKER.SEARCH, {
       params: query,
     });
-    return response.data.data as {
-      results: any[];
-      nextCursor: string | null;
-      hasNextPage: boolean;
-    };
+    return response.data;
   },
 
   getById: async (id: string) => {

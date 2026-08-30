@@ -16,7 +16,8 @@ export const useSearchWorkers = (query: WorkerSearchQuery, enabled = true) => {
         cursor: pageParam as string | undefined,
       });
     },
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage?.meta?.pagination?.nextCursor ?? undefined,
     initialPageParam: undefined as string | undefined,
     enabled,
   });

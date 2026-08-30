@@ -71,7 +71,13 @@ export function WorkerSearchBottomSheet({
   } = useSearchWorkers(query, visible && debouncedText.length > 0);
 
   const workers: WorkerSearchResult[] = useMemo(
-    () => data?.pages.flatMap((p) => p.results) ?? [],
+    () =>
+      data?.pages.flatMap((p) => {
+        if (Array.isArray(p?.data)) return p.data;
+        if (Array.isArray((p as any)?.results)) return (p as any).results;
+        if (Array.isArray(p)) return p;
+        return [];
+      }) ?? [],
     [data]
   );
 
@@ -179,7 +185,7 @@ export function WorkerSearchBottomSheet({
         ) : (
           <FlatList
             data={workers}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => item?.id ?? index.toString()}
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
             renderItem={({ item }) => (
               <WorkerSearchResultTile
