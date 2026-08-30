@@ -37,7 +37,8 @@ export const ENDPOINTS = {
   },
   WORKFORCE_REQUEST: {
     CREATE: "/workforce-requests",
-    GET_SENT: "/workforce-requests/sent",
+    GET_OUTGOING: "/workforce-requests/outgoing",
+    GET_INCOMING: "/workforce-requests/incoming",
     UPDATE_STATUS: "/workforce-requests",
     CANCEL: (requestId: string) => `/workforce-requests/${requestId}`,
   },

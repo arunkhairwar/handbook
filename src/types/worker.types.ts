@@ -48,8 +48,19 @@ export type WorkforceRequestStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 export type WorkforceRequest = {
   id: string;
   status: WorkforceRequestStatus;
-  rejectionReason: string | null;
+  rejectionReason?: string | null;
+  reason?: string | null;
   createdAt: string;
   updatedAt: string;
   receiver: WorkerSearchResult;
+  sender?: WorkerSearchResult;
+  workforce?: Workforce;
+  role?: WorkerRole;
 };
+
+export type UpdateWorkforceRequestStatusData = {
+  requestId: string;
+  status: WorkforceRequestStatus;
+  reason?: string | null;
+};
+

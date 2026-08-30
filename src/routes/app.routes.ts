@@ -17,9 +17,14 @@ export const AppRoutes = {
   WORKER: {
     DASHBOARD: "/(home)/dashboard",
   },
+  WORKFORCE: {
+    OUTGOING_REQUESTS: "/(home)/workers/requests/outgoing",
+    INCOMING_REQUESTS: "/(home)/workers/requests/incoming",
+  },
   AUTH: {
     LOGIN: "/(auth)/login",
     REGISTER: "/(auth)/register",
     VERIFY_OTP: "/(auth)/verify-otp",
   },
 } as const;
+

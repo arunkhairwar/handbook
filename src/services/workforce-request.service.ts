@@ -1,6 +1,9 @@
 import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
-import { WorkforceRequest } from "../types/worker.types";
+import {
+  UpdateWorkforceRequestStatusData,
+  WorkforceRequest,
+} from "../types/worker.types";
 
 export type SendWorkforceRequestData = {
   receiverId: string;
@@ -15,7 +18,7 @@ const workforceRequestService = {
   sendRequest: async (data: SendWorkforceRequestData) => {
     const response = await axiosInstance.post(
       ENDPOINTS.WORKFORCE_REQUEST.CREATE,
-      data
+      data,
     );
     return response.data.data;
   },
@@ -26,9 +29,34 @@ const workforceRequestService = {
    */
   getSentRequests: async (): Promise<WorkforceRequest[]> => {
     const response = await axiosInstance.get(
-      ENDPOINTS.WORKFORCE_REQUEST.GET_SENT
+      ENDPOINTS.WORKFORCE_REQUEST.GET_OUTGOING,
     );
     return response.data.data as WorkforceRequest[];
+  },
+
+  /**
+   * Get all incoming requests for the authenticated user.
+   * Returns: WorkforceRequest[]
+   */
+  getIncomingRequests: async (): Promise<WorkforceRequest[]> => {
+    const response = await axiosInstance.get(
+      ENDPOINTS.WORKFORCE_REQUEST.GET_INCOMING,
+    );
+    return response.data.data as WorkforceRequest[];
+  },
+
+  /**
+   * Update status of an incoming workforce request (PATCH /workforce-requests).
+   * Payload: { requestId, status: "ACCEPTED" | "REJECTED", reason?: string }
+   */
+  updateRequestStatus: async (
+    data: UpdateWorkforceRequestStatusData,
+  ): Promise<WorkforceRequest> => {
+    const response = await axiosInstance.patch(
+      ENDPOINTS.WORKFORCE_REQUEST.UPDATE_STATUS,
+      data,
+    );
+    return response.data.data as WorkforceRequest;
   },
 
   /**
@@ -37,10 +65,11 @@ const workforceRequestService = {
    */
   cancelRequest: async (requestId: string) => {
     const response = await axiosInstance.delete(
-      ENDPOINTS.WORKFORCE_REQUEST.CANCEL(requestId)
+      ENDPOINTS.WORKFORCE_REQUEST.CANCEL(requestId),
     );
     return response.data.data;
   },
 };
 
 export default workforceRequestService;
+
