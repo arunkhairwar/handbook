@@ -27,10 +27,18 @@ export const ENDPOINTS = {
     DELETE: (id: string) => `/sites/${id}`,
   },
   WORKER: {
-    GET_ALL: "/workers",
+    SEARCH: "/workers/search",
     GET_BY_ID: (id: string) => `/workers/${id}`,
-    UPDATE: (id: string) => `/workers/${id}`,
-    DELETE: (id: string) => `/workers/${id}`,
+  },
+  WORKFORCE: {
+    CREATE: "/workforces",
+    GET_WORKERS: (workforceId: string) => `/workforces/${workforceId}/workers`,
+  },
+  WORKFORCE_REQUEST: {
+    CREATE: "/workforce-requests",
+    GET_SENT: "/workforce-requests/sent",
+    UPDATE_STATUS: "/workforce-requests",
+    CANCEL: (requestId: string) => `/workforce-requests/${requestId}`,
   },
 };
 

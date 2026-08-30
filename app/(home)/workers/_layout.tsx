@@ -11,7 +11,7 @@ export default function WorkersLayout() {
                 contentStyle: { backgroundColor: Colors.background },
             }}
         >
-            <Stack.Screen name="index" options={{ title: 'All Workers' }} />
+            <Stack.Screen name="index" options={{ title: 'My Workforce' }} />
             <Stack.Screen name="[id]" options={{ title: 'Worker Profile' }} />
         </Stack>
     );
