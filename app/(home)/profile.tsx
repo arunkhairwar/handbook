@@ -43,7 +43,7 @@ export default function ProfileScreen() {
       .join(" ");
   };
 
-  const formattedMobile = user ? `+${user.countryCode} ${user.mobile}` : "";
+  const formattedMobile = user ? `${user.countryCode} ${user.mobile}` : "";
 
   return (
     <ScrollView className="flex-1 bg-white">
