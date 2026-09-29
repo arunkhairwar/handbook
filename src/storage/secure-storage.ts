@@ -39,6 +39,14 @@ export async function deleteSecureValue(key: StorageKey): Promise<void> {
   await SecureStore.deleteItemAsync(key);
 }
 
+export async function clearSecureStorage(): Promise<void> {
+  await Promise.all(
+    Object.values(StorageKeys).map((key) =>
+      SecureStore.deleteItemAsync(key),
+    ),
+  );
+}
+
 /**
  * Clear all known auth-related keys from secure storage.
  * Call this on logout.
