@@ -11,6 +11,7 @@ import { RegisterFormData } from "../schema/auth.schema";
 import { authService } from "../services/auth.service";
 import {
   clearAuthStorage,
+  clearSecureStorage,
   setSecureValue,
   StorageKeys,
 } from "../storage/secure-storage";
@@ -111,6 +112,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: async () => {
       await clearAuthStorage();
+      await clearSecureStorage()
     },
     meta: { errorTitle: "Logout Failed" },
     onSuccess: () => {
