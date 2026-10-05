@@ -4,12 +4,13 @@ import { Badge } from "@/src/components/ui/Badge";
 import { Button } from "@/src/components/ui/Button";
 import ProfilePicture from "@/src/components/ui/ProfilePicture";
 import { useLogout } from "@/src/hooks";
+import { useUpdateWorkAvailability } from "@/src/hooks/useUser";
 import { AppRoutes } from "@/src/routes/app.routes";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Switch, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
@@ -17,6 +18,11 @@ export default function ProfileScreen() {
   const user = useAtomValue(userAtom);
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const logoutMutation = useLogout();
+  const updateWorkAvailabilityMutation = useUpdateWorkAvailability();
+
+  const handleToggleAvailability = (value: boolean) => {
+    updateWorkAvailabilityMutation.mutate(value);
+  };
 
   const handleImageChange = (uri: string) => {
     setAvatarUri(uri);
@@ -59,15 +65,24 @@ export default function ProfileScreen() {
             {getFullName() || "Loading..."}
           </Text>
           {user && (
-            <Badge
-              title={
-                user?.profile?.availableForWork
-                  ? "Available for work"
-                  : "Not available for work"
-              }
-              variant={user?.profile?.availableForWork ? "success" : "warning"}
-              textTransform="uppercase"
-            />
+            <View className="flex-row items-center gap-2 bg-white/90 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm mt-1">
+              <Badge
+                title={
+                  user?.profile?.availableForWork
+                    ? "Available for work"
+                    : "Not available for work"
+                }
+                variant={user?.profile?.availableForWork ? "success" : "warning"}
+                textTransform="uppercase"
+              />
+              <Switch
+                value={Boolean(user?.profile?.availableForWork)}
+                onValueChange={handleToggleAvailability}
+                trackColor={{ false: "#D1D5DB", true: Colors.success }}
+                thumbColor="#FFFFFF"
+                ios_backgroundColor="#D1D5DB"
+              />
+            </View>
           )}
         </View>
       </View>
