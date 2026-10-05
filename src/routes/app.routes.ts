@@ -18,9 +18,11 @@ export const AppRoutes = {
     DASHBOARD: "/(home)/dashboard",
   },
   WORKFORCE: {
-    OUTGOING_REQUESTS: "/(home)/workers/requests/outgoing",
-    INCOMING_REQUESTS: "/(home)/workers/requests/incoming",
+    REQUESTS: "/(home)/workers/requests",
+    OUTGOING_REQUESTS: "/(home)/workers/requests?tab=outgoing",
+    INCOMING_REQUESTS: "/(home)/workers/requests?tab=incoming",
   },
+
   AUTH: {
     LOGIN: "/(auth)/login",
     REGISTER: "/(auth)/register",

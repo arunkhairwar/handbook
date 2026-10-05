@@ -1,11 +1,12 @@
-import React from "react";
-import { View } from "react-native";
-import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
+import ActiveSitesList from "@/src/components/dashboard/ActiveSitesList";
 import DashboardHeader from "@/src/components/dashboard/DashboardHeader";
-import WeeklyPayoutAlert from "@/src/components/dashboard/WeeklyPayoutAlert";
 import FinancialSummary from "@/src/components/dashboard/FinancialSummary";
 import TodayWorkforce from "@/src/components/dashboard/TodayWorkforce";
-import ActiveSitesList from "@/src/components/dashboard/ActiveSitesList";
+import WeeklyPayoutAlert from "@/src/components/dashboard/WeeklyPayoutAlert";
+import WorkforceRequestsTile from "@/src/components/dashboard/WorkforceRequestsTile";
+import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
+import React from "react";
+import { View } from "react-native";
 
 export default function ContractorDashboard() {
   return (
@@ -15,8 +16,10 @@ export default function ContractorDashboard() {
         <WeeklyPayoutAlert />
         <FinancialSummary />
         <TodayWorkforce />
+        <WorkforceRequestsTile />
         <ActiveSitesList />
       </View>
     </SafeAreaWrapper>
   );
 }
+

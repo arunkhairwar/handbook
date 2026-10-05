@@ -4,15 +4,16 @@ import { FloatingActionButton } from "@/src/components/ui/FloatingActionButton";
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import { CreateWorkforceModal } from "@/src/components/workers/CreateWorkforceModal";
 import { WorkerSearchBottomSheet } from "@/src/components/workers/WorkerSearchBottomSheet";
-import { WorkforceRequestsSheet } from "@/src/components/workers/WorkforceRequestsSheet";
 import { WorkforceWorkerTile } from "@/src/components/workers/WorkforceWorkerTile";
 import {
   useMyWorkforce,
   useSentWorkforceRequests,
   useWorkforceWorkers,
 } from "@/src/hooks";
+import { AppRoutes } from "@/src/routes";
 import { Workforce, WorkforceWorker } from "@/src/types/worker.types";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -25,12 +26,13 @@ import {
 } from "react-native";
 
 export default function WorkersListScreen() {
+  const router = useRouter();
   const [workforce, setWorkforce] = useAtom(workforceAtom);
 
   // Sheets visibility
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSearchSheet, setShowSearchSheet] = useState(false);
-  const [showRequestsSheet, setShowRequestsSheet] = useState(false);
+
 
   // Local search for filtering confirmed workforce members
   const [memberSearch, setMemberSearch] = useState("");
@@ -86,7 +88,7 @@ export default function WorkersListScreen() {
         />
 
         <TouchableOpacity
-          id="create-workforce-cta-btn"
+          testID="create-workforce-cta-btn"
           className="flex-row items-center justify-center mx-8 mb-10 py-3.5 rounded-2xl bg-primary shadow-lg elevation-6"
           onPress={() => setShowCreateModal(true)}
         >
@@ -111,7 +113,7 @@ export default function WorkersListScreen() {
         <View className="flex-1 flex-row items-center bg-background rounded-lg border border-border px-2.5 py-2">
           <Ionicons name="search-outline" size={16} color="#64748B" style={{ marginRight: 6 }} />
           <TextInput
-            id="workforce-member-search"
+            testID="workforce-member-search"
             placeholder="Search members..."
             placeholderTextColor="#64748B"
             value={memberSearch}
@@ -121,10 +123,17 @@ export default function WorkersListScreen() {
         </View>
 
         <TouchableOpacity
-          id="view-requests-btn"
+          testID="view-requests-btn"
           className="relative w-10 h-10 rounded-full bg-primary/10 justify-center items-center"
-          onPress={() => setShowRequestsSheet(true)}
+          onPress={() =>
+            router.push({
+              pathname: AppRoutes.WORKFORCE.REQUESTS as any,
+              params: { tab: "outgoing" },
+            })
+          }
         >
+
+
           <Ionicons name="paper-plane-outline" size={20} color="#1E293B" />
           {pendingCount > 0 && (
             <View className="absolute top-0.5 right-0.5 min-w-[16px] h-4 rounded-full bg-error justify-center items-center px-1">
@@ -182,10 +191,11 @@ export default function WorkersListScreen() {
 
       {/* FAB to open worker search */}
       <FloatingActionButton
-        id="add-worker-fab"
+        testID="add-worker-fab"
         variant="primary"
         onPress={() => setShowSearchSheet(true)}
       />
+
 
       {/* Worker Search Full-Screen Sheet */}
       <WorkerSearchBottomSheet
@@ -193,12 +203,7 @@ export default function WorkersListScreen() {
         workforceId={workforce.id}
         onClose={() => setShowSearchSheet(false)}
       />
-
-      {/* Sent Requests Full-Screen Sheet */}
-      <WorkforceRequestsSheet
-        visible={showRequestsSheet}
-        onClose={() => setShowRequestsSheet(false)}
-      />
     </View>
   );
 }
+

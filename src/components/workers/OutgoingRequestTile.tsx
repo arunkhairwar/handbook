@@ -75,7 +75,7 @@ export function OutgoingRequestTile({
         />
         {request.status === "PENDING" && onCancel && (
           <TouchableOpacity
-            id={`cancel-request-${request.id}`}
+            testID={`cancel-request-${request.id}`}
             className="flex-row items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 active:opacity-70 mt-1"
             onPress={() => onCancel(request)}
             disabled={isCancelling}
@@ -84,6 +84,7 @@ export function OutgoingRequestTile({
             <Text className="text-xs font-semibold text-error">Cancel</Text>
           </TouchableOpacity>
         )}
+
       </View>
     </View>
   );

@@ -26,6 +26,7 @@ Where major features, screens, hooks, services, and types live.
 | `sites/add.tsx` | Create new site form |
 | `workers/index.tsx` | Worker list with search |
 | `workers/[id].tsx` | Worker detail |
+| `workers/requests.tsx` | Workforce Requests screen (with Incoming & Outgoing tabs) |
 
 ---
 
@@ -56,6 +57,20 @@ See `docs/COMPONENTS.md` for full details.
 - `StatCard` — Single stat number card.
 - `TodayWorkforce` — Today's worker count.
 - `WeeklyPayoutAlert` — Alert banner for upcoming payouts.
+- `WorkforceRequestsTile` — Dashboard tile showing incoming/outgoing request counts.
+
+**Workers** — `src/components/workers/`
+- `CreateWorkforceModal` — Modal form to create workforce.
+- `WorkerSearchBottomSheet` — Full-screen sheet to search and invite workers.
+- `WorkerSearchResultTile` — Search result item.
+- `WorkforceWorkerTile` — Confirmed worker card.
+- `OutgoingRequestsList` — Component rendering sent workforce requests list.
+- `IncomingRequestsList` — Component rendering received workforce requests list.
+- `OutgoingRequestTile` — Outgoing request item card with cancel action.
+- `IncomingRequestTile` — Incoming request item card with accept/reject actions.
+- `RequestTabsHeader` — Segmented switcher between incoming and outgoing tabs.
+
+
 
 ---
 
@@ -68,7 +83,10 @@ See `docs/COMPONENTS.md` for full details.
 | `useClient.ts` | `useClient` (getAllClients, createClient, updateClient, deleteClient) | Client CRUD |
 | `useSite.ts` | `useSites`, `useSiteDetails`, `useCreateSite`, `useUpdateSite`, `useDeleteSite` | Site CRUD |
 | `useWorker.ts` | `useSearchWorkers` | Worker search |
+| `useWorkforce.ts` | `useCreateWorkforce`, `useMyWorkforce`, `useWorkforceWorkers` | Workforce management |
+| `useWorkforceRequest.ts` | `useSentWorkforceRequests`, `useIncomingWorkforceRequests`, `useSendWorkforceRequest`, `useUpdateWorkforceRequestStatus`, `useCancelWorkforceRequest` | Workforce requests |
 | `useImagePicker.ts` | `useImagePicker` | Camera/gallery picker |
+
 | `use-color-scheme.ts` | `useColorScheme` | Theme detection |
 | `use-theme-color.ts` | `useThemeColor` | Themed color values |
 

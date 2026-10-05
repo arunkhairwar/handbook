@@ -118,7 +118,7 @@ export function IncomingRequestTile({
         <View className="flex-row items-center gap-2.5 pt-1 border-t border-border/40 mt-1">
           {/* Reject Button */}
           <TouchableOpacity
-            id={`reject-request-${request.id}`}
+            testID={`reject-request-${request.id}`}
             className="flex-1 flex-row items-center justify-center py-2.5 px-3 rounded-xl border border-red-300 bg-red-50/60 active:opacity-70"
             onPress={() => onReject?.(request)}
             disabled={isUpdating}
@@ -129,11 +129,12 @@ export function IncomingRequestTile({
 
           {/* Accept Button */}
           <TouchableOpacity
-            id={`accept-request-${request.id}`}
+            testID={`accept-request-${request.id}`}
             className="flex-1 flex-row items-center justify-center py-2.5 px-3 rounded-xl bg-emerald-600 active:opacity-80 shadow-sm"
             onPress={() => onAccept?.(request)}
             disabled={isUpdating}
           >
+
             {isUpdating ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (

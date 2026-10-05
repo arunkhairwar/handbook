@@ -126,7 +126,7 @@ export function WorkerSearchBottomSheet({
       <View className="flex-1 bg-background">
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 pt-14 pb-2 bg-card border-b border-border">
-          <TouchableOpacity onPress={handleClose} id="close-worker-search-btn">
+          <TouchableOpacity onPress={handleClose} testID="close-worker-search-btn">
             <Ionicons name="arrow-back" size={24} color="#0F172A" />
           </TouchableOpacity>
           <Text className="text-base font-bold text-text">Find Workers</Text>
@@ -136,7 +136,7 @@ export function WorkerSearchBottomSheet({
         {/* Search Bar */}
         <View className="px-4 pt-3 bg-card">
           <Input
-            id="worker-search-input"
+            testID="worker-search-input"
             placeholder="Search workers..."
             value={searchText}
             onChangeText={handleSearch}
@@ -150,7 +150,7 @@ export function WorkerSearchBottomSheet({
           {FILTERS.map((f) => (
             <TouchableOpacity
               key={f.key}
-              id={`filter-chip-${f.key}`}
+              testID={`filter-chip-${f.key}`}
               className={cn(
                 "px-3.5 py-1.5 rounded-full",
                 activeFilter === f.key ? "bg-primary" : "bg-border"

@@ -87,7 +87,7 @@ export function CreateWorkforceModal({
           {/* Header */}
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-xl font-bold text-text">Create Your Workforce</Text>
-            <TouchableOpacity onPress={onClose} id="close-create-workforce-modal">
+            <TouchableOpacity onPress={onClose} testID="close-create-workforce-modal">
               <Text className="text-lg text-text-secondary p-1">✕</Text>
             </TouchableOpacity>
           </View>
@@ -97,7 +97,7 @@ export function CreateWorkforceModal({
           </Text>
 
           <Input
-            id="workforce-name-input"
+            testID="workforce-name-input"
             label="Team Name (optional)"
             placeholder="e.g. Sharma's Team"
             value={name}
@@ -106,13 +106,14 @@ export function CreateWorkforceModal({
           />
 
           <Input
-            id="workforce-max-members-input"
+            testID="workforce-max-members-input"
             label="Max Members (optional, default 10)"
             placeholder="10"
             value={maxMembers}
             onChangeText={setMaxMembers}
             keyboardType="number-pad"
           />
+
 
           <Button
             title={isPending ? "Creating..." : "Create Workforce"}

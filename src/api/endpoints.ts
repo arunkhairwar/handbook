@@ -10,6 +10,7 @@ export const ENDPOINTS = {
   },
   USER: {
     ME: "/users/me",
+    UPDATE: "/users/me"
   },
   CLIENT: {
     CREATE: "/clients",

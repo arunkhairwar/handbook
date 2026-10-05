@@ -1,14 +1,12 @@
 import { EmptyState } from "@/src/components/ui/EmptyState";
 import { LoadingSpinner } from "@/src/components/ui/LoadingSpinner";
 import { OutgoingRequestTile } from "@/src/components/workers/OutgoingRequestTile";
-import { RequestTabsHeader } from "@/src/components/workers/RequestTabsHeader";
 import {
   useCancelWorkforceRequest,
-  useIncomingWorkforceRequests,
   useSentWorkforceRequests,
 } from "@/src/hooks";
 import { WorkforceRequest } from "@/src/types/worker.types";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Alert,
   FlatList,
@@ -17,7 +15,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-export default function OutgoingRequestsScreen() {
+export function OutgoingRequestsList() {
   const {
     data: requests,
     isLoading,
@@ -25,20 +23,8 @@ export default function OutgoingRequestsScreen() {
     refetch,
   } = useSentWorkforceRequests();
 
-  const { data: incomingRequests } = useIncomingWorkforceRequests();
-
   const { mutate: cancelRequest, isPending: isCancelling } =
     useCancelWorkforceRequest();
-
-  const pendingOutgoingCount = useMemo(
-    () => requests?.filter((r) => r.status === "PENDING").length ?? 0,
-    [requests]
-  );
-
-  const pendingIncomingCount = useMemo(
-    () => incomingRequests?.filter((r) => r.status === "PENDING").length ?? 0,
-    [incomingRequests]
-  );
 
   const handleCancel = (request: WorkforceRequest) => {
     const receiverName = [request.receiver.firstName, request.receiver.lastName]
@@ -76,44 +62,38 @@ export default function OutgoingRequestsScreen() {
     );
   };
 
+  if (isLoading) {
+    return <LoadingSpinner fullScreen message="Loading sent requests..." />;
+  }
+
   return (
     <View className="flex-1 bg-background">
-      <RequestTabsHeader
-        activeTab="outgoing"
-        outgoingCount={pendingOutgoingCount}
-        incomingCount={pendingIncomingCount}
+      <FlatList
+        data={requests ?? []}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ padding: 16, paddingBottom: 40, flexGrow: 1 }}
+        renderItem={({ item }) => (
+          <OutgoingRequestTile
+            request={item}
+            onCancel={handleCancel}
+            isCancelling={isCancelling}
+          />
+        )}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            tintColor="#1E293B"
+          />
+        }
+        ListEmptyComponent={
+          <EmptyState
+            iconName="paper-plane-outline"
+            title="No Sent Requests"
+            description="You haven't sent any workforce invites yet. Invite workers from the Workers tab."
+          />
+        }
       />
-
-      {isLoading ? (
-        <LoadingSpinner fullScreen message="Loading sent requests..." />
-      ) : (
-        <FlatList
-          data={requests ?? []}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16, paddingBottom: 40, flexGrow: 1 }}
-          renderItem={({ item }) => (
-            <OutgoingRequestTile
-              request={item}
-              onCancel={handleCancel}
-              isCancelling={isCancelling}
-            />
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefetching}
-              onRefresh={refetch}
-              tintColor="#1E293B"
-            />
-          }
-          ListEmptyComponent={
-            <EmptyState
-              iconName="paper-plane-outline"
-              title="No Sent Requests"
-              description="You haven't sent any workforce invites yet. Invite workers from the Workers tab."
-            />
-          }
-        />
-      )}
     </View>
   );
 }
