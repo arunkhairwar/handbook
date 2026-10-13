@@ -20,30 +20,26 @@ export function RequestTabsHeader({
         {/* Incoming Tab */}
         <TouchableOpacity
           testID="tab-incoming-requests"
-          className={`flex-1 flex-row items-center justify-center py-2.5 rounded-lg ${
-            activeTab === "incoming"
+          className={`flex-1 flex-row items-center justify-center py-2.5 rounded-lg ${activeTab === "incoming"
               ? "bg-primary shadow-sm"
               : "bg-transparent"
-          }`}
+            }`}
           onPress={() => onTabChange("incoming")}
         >
           <Text
-            className={`text-xs font-bold ${
-              activeTab === "incoming" ? "text-white" : "text-text-secondary"
-            }`}
+            className={`text-xs font-bold ${activeTab === "incoming" ? "text-white" : "text-text-secondary"
+              }`}
           >
             Received / Incoming
           </Text>
           {incomingCount > 0 && (
             <View
-              className={`ml-1.5 px-1.5 py-0.5 rounded-full ${
-                activeTab === "incoming" ? "bg-white/20" : "bg-border"
-              }`}
+              className={`ml-1.5 px-1.5 py-0.5 rounded-full ${activeTab === "incoming" ? "bg-white/20" : "bg-border"
+                }`}
             >
               <Text
-                className={`text-[10px] font-bold ${
-                  activeTab === "incoming" ? "text-white" : "text-text-secondary"
-                }`}
+                className={`text-[10px] font-bold ${activeTab === "incoming" ? "text-white" : "text-text-secondary"
+                  }`}
               >
                 {incomingCount}
               </Text>
@@ -54,31 +50,27 @@ export function RequestTabsHeader({
         {/* Outgoing Tab */}
         <TouchableOpacity
           testID="tab-outgoing-requests"
-          className={`flex-1 flex-row items-center justify-center py-2.5 rounded-lg ${
-            activeTab === "outgoing"
+          className={`flex-1 flex-row items-center justify-center py-2.5 rounded-lg ${activeTab === "outgoing"
               ? "bg-primary shadow-sm"
               : "bg-transparent"
-          }`}
+            }`}
           onPress={() => onTabChange("outgoing")}
         >
 
           <Text
-            className={`text-xs font-bold ${
-              activeTab === "outgoing" ? "text-white" : "text-text-secondary"
-            }`}
+            className={`text-xs font-bold ${activeTab === "outgoing" ? "text-white" : "text-text-secondary"
+              }`}
           >
             Sent / Outgoing
           </Text>
           {outgoingCount > 0 && (
             <View
-              className={`ml-1.5 px-1.5 py-0.5 rounded-full ${
-                activeTab === "outgoing" ? "bg-white/20" : "bg-border"
-              }`}
+              className={`ml-1.5 px-1.5 py-0.5 rounded-full ${activeTab === "outgoing" ? "bg-white/20" : "bg-border"
+                }`}
             >
               <Text
-                className={`text-[10px] font-bold ${
-                  activeTab === "outgoing" ? "text-white" : "text-text-secondary"
-                }`}
+                className={`text-[10px] font-bold ${activeTab === "outgoing" ? "text-white" : "text-text-secondary"
+                  }`}
               >
                 {outgoingCount}
               </Text>

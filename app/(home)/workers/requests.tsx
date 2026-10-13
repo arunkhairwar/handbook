@@ -7,14 +7,20 @@ import {
 } from "@/src/hooks";
 import { WorkforceRequest } from "@/src/types/worker.types";
 import { useLocalSearchParams } from "expo-router";
-import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 export default function WorkforceRequestsScreen() {
   const params = useLocalSearchParams<{ tab?: string }>();
-  const initialTab = params.tab === "outgoing" ? "outgoing" : "incoming";
 
-  const [activeTab, setActiveTab] = useState<"incoming" | "outgoing">(initialTab);
+  const [activeTab, setActiveTab] = useState<"incoming" | "outgoing">("incoming");
+  const [ready, setReady] = useState(false);
+
+  // Resolve the correct tab from params before rendering to avoid flash
+  useEffect(() => {
+    setActiveTab(params.tab === "outgoing" ? "outgoing" : "incoming");
+    setReady(true);
+  }, [params.tab]);
 
   const { data: incomingRequests } = useIncomingWorkforceRequests();
   const { data: outgoingRequests } = useSentWorkforceRequests();
@@ -33,6 +39,14 @@ export default function WorkforceRequestsScreen() {
   const handleDetailsPress = (_request: WorkforceRequest) => {
     // Placeholder ready for future detail screen navigation
   };
+
+  if (!ready) {
+    return (
+      <View className="flex-1 bg-background items-center justify-center">
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-background">

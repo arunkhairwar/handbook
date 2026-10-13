@@ -126,7 +126,7 @@ export default function WorkersListScreen() {
           testID="view-requests-btn"
           className="relative w-10 h-10 rounded-full bg-primary/10 justify-center items-center"
           onPress={() =>
-            router.push({
+            router.navigate({
               pathname: AppRoutes.WORKFORCE.REQUESTS as any,
               params: { tab: "outgoing" },
             })

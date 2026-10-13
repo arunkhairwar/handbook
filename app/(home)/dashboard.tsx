@@ -5,7 +5,6 @@ import TodayWorkforce from "@/src/components/dashboard/TodayWorkforce";
 import WeeklyPayoutAlert from "@/src/components/dashboard/WeeklyPayoutAlert";
 import WorkforceRequestsTile from "@/src/components/dashboard/WorkforceRequestsTile";
 import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
-import React from "react";
 import { View } from "react-native";
 
 export default function ContractorDashboard() {
@@ -16,7 +15,7 @@ export default function ContractorDashboard() {
         <WeeklyPayoutAlert />
         <FinancialSummary />
         <TodayWorkforce />
-        <WorkforceRequestsTile />
+        {/* <WorkforceRequestsTile /> */}
         <ActiveSitesList />
       </View>
     </SafeAreaWrapper>

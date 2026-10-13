@@ -38,7 +38,7 @@ export default function WorkforceRequestsTile() {
           activeOpacity={0.8}
           className="flex-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"
           onPress={() =>
-            router.push({
+            router.navigate({
               pathname: AppRoutes.WORKFORCE.REQUESTS as any,
               params: { tab: "incoming" },
             })
@@ -80,7 +80,7 @@ export default function WorkforceRequestsTile() {
           activeOpacity={0.8}
           className="flex-1 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"
           onPress={() =>
-            router.push({
+            router.navigate({
               pathname: AppRoutes.WORKFORCE.REQUESTS as any,
               params: { tab: "outgoing" },
             })

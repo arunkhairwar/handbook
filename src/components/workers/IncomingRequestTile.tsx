@@ -1,7 +1,6 @@
 import { Badge } from "@/src/components/ui/Badge";
 import { WorkforceRequest, WorkforceRequestStatus } from "@/src/types/worker.types";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
 import {
   ActivityIndicator,
   Text,
