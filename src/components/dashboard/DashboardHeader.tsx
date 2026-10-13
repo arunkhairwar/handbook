@@ -17,7 +17,7 @@ export default function DashboardHeader() {
     <View className="mb-5 flex-row justify-between items-end">
       <View>
         <Text className="text-2xl font-bold text-slate-800">
-          Hello, {user?.name || "Contractor"}
+          Hello, {user?.firstName || "Contractor"}
         </Text>
         <Text className="text-sm font-medium text-slate-500 mt-1">
           {formattedDate}

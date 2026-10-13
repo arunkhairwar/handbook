@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SiteKhata",
-    "slug": "SiteKhata",
+    "slug": "sitekhata",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo3.png",
@@ -11,15 +11,15 @@
       "supportsTablet": true
     },
     "android": {
-      "usesCleartextTraffic": true,
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/logo3.png",
         "backgroundImage": "./assets/images/logo3.png",
         "monochromeImage": "./assets/images/logo3.png"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.SiteKhata"
     },
     "web": {
       "output": "static",
@@ -40,11 +40,27 @@
         }
       ],
       "expo-secure-store",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8e3933d5-dc1e-41b3-a112-bd0ce5b00a6d"
+      }
+    },
+    "owner": "site-khata"
   }
 }

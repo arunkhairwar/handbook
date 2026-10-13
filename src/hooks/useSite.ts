@@ -1,95 +1,87 @@
-import { useState } from 'react';
-import { useAtom } from 'jotai';
-import { siteAtom } from '../atoms/site.atoms';
-import { siteService, CreateSiteData, UpdateSiteData } from '../services/site.service';
-import Toast from 'react-native-toast-message';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  siteService,
+  CreateSiteData,
+  UpdateSiteData,
+} from "../services/site.service";
 
-export const useSite = () => {
-  const [sites, setSites] = useAtom(siteAtom);
-  const [isLoading, setIsLoading] = useState(false);
+/**
+ * Hook to fetch paginated sites list using infinite query.
+ */
+export const useSites = (params?: { q?: string; limit?: number }) => {
+  return useInfiniteQuery({
+    queryKey: ["sites", params?.q, params?.limit],
+    queryFn: ({ pageParam }) =>
+      siteService.getAllSites({
+        cursor: pageParam as string | undefined,
+        q: params?.q,
+        limit: params?.limit,
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta?.pagination?.nextCursor ?? undefined,
+  });
+};
 
-  const getAllSites = async () => {
-    setIsLoading(true);
-    try {
-      const response = await siteService.getAllSites();
-      const data = Array.isArray(response) ? response : response.data || [];
-      setSites(data);
-      return data;
-    } catch (error: any) {
-      console.error('Error fetching sites:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to fetch sites',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+/**
+ * Hook to fetch single site details.
+ */
+export const useSiteDetails = (id: string) => {
+  return useQuery({
+    queryKey: ["site", id],
+    queryFn: async () => {
+      const res = await siteService.getSiteById(id);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+};
 
-  const createSite = async (data: CreateSiteData) => {
-    setIsLoading(true);
-    try {
-      const response = await siteService.createSite(data);
-      await getAllSites();
-      return response;
-    } catch (error: any) {
-      console.error('Error creating site:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to create site',
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+/**
+ * Hook to create a site.
+ */
+export const useCreateSite = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: siteService.createSite,
+    meta: { errorTitle: "Failed to create site" },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sites"] });
+    },
+  });
+};
 
-  const updateSite = async (id: string, data: UpdateSiteData) => {
-    setIsLoading(true);
-    try {
-      const response = await siteService.updateSite(id, data);
-      await getAllSites();
-      return response;
-    } catch (error: any) {
-      console.error('Error updating site:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to update site',
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+/**
+ * Hook to update a site.
+ */
+export const useUpdateSite = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateSiteData }) =>
+      siteService.updateSite(id, data),
+    meta: { errorTitle: "Failed to update site" },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["sites"] });
+      queryClient.invalidateQueries({ queryKey: ["site", variables.id] });
+    },
+  });
+};
 
-  const deleteSite = async (id: string) => {
-    setIsLoading(true);
-    try {
-      const response = await siteService.deleteSite(id);
-      await getAllSites();
-      return response;
-    } catch (error: any) {
-      console.error('Error deleting site:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.response?.data?.message || 'Failed to delete site',
-      });
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return {
-    sites,
-    isLoading,
-    getAllSites,
-    createSite,
-    updateSite,
-    deleteSite,
-  };
+/**
+ * Hook to delete a site.
+ */
+export const useDeleteSite = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: siteService.deleteSite,
+    meta: { errorTitle: "Failed to delete site" },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["sites"] });
+    },
+  });
 };

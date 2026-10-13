@@ -3,7 +3,6 @@ import {
   Modal,
   View,
   TouchableOpacity,
-  StyleSheet,
   StatusBar,
   Dimensions,
 } from "react-native";
@@ -32,10 +31,10 @@ const FullScreenMediaView: React.FC<FullScreenMediaViewProps> = ({
       onRequestClose={onClose}
     >
       <StatusBar backgroundColor="rgba(0,0,0,0.95)" barStyle="light-content" />
-      <View style={styles.overlay}>
+      <View className="flex-1 bg-black/95 justify-center items-center">
         {/* Close Button */}
         <TouchableOpacity
-          style={styles.closeButton}
+          className="absolute top-12 right-5 z-10 w-10 h-10 rounded-full bg-white/20 justify-center items-center"
           onPress={onClose}
           activeOpacity={0.7}
         >
@@ -43,10 +42,14 @@ const FullScreenMediaView: React.FC<FullScreenMediaViewProps> = ({
         </TouchableOpacity>
 
         {/* Image */}
-        <View style={styles.imageContainer}>
+        <View
+          style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.7 }}
+          className="justify-center items-center"
+        >
           <Image
             source={{ uri: imageUri }}
-            style={styles.image}
+            style={{ width: SCREEN_WIDTH * 0.9, height: SCREEN_WIDTH * 0.9 }}
+            className="rounded-xl"
             contentFit="contain"
             transition={200}
           />
@@ -55,37 +58,5 @@ const FullScreenMediaView: React.FC<FullScreenMediaViewProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.95)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  closeButton: {
-    position: "absolute",
-    top: 50,
-    right: 20,
-    zIndex: 10,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageContainer: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.7,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_WIDTH * 0.9,
-    borderRadius: 12,
-  },
-});
 
 export default FullScreenMediaView;

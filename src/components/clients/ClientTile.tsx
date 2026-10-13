@@ -38,6 +38,12 @@ export const ClientTile: React.FC<ClientTileProps> = ({ client }) => {
             {client.mobile}
           </Text>
         </View>
+        <View
+          className="w-11 h-11 rounded-full items-center justify-center dark:bg-blue-900/30"
+          style={{ backgroundColor: tileColors.background }}
+        >
+          <Ionicons name="call" size={22} color={tileColors.icon} />
+        </View>
       </View>
     </Card>
   );

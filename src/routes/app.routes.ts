@@ -1,24 +1,32 @@
 export const AppRoutes = {
   ADMIN: {
-    DASHBOARD: "/(admin)/dashboard",
-    CLIENTS: "/(admin)/clients",
-    SITES: "/(admin)/sites",
-    WORKERS: "/(admin)/workers",
-    PAYMENTS: "/(admin)/payments",
+    DASHBOARD: "/(home)/dashboard",
+    CLIENTS: "/(home)/clients",
+    SITES: "/(home)/sites",
+    WORKERS: "/(home)/workers",
+    PAYMENTS: "/(home)/payments",
   },
   SITE: {
-    ADD: "/(admin)/sites/add",
-    DETAIL: (id: string) => `/(admin)/sites/${id}`,
+    ADD: "/(home)/sites/add",
+    DETAIL: (id: string) => `/(home)/sites/${id}`,
   },
   CLIENT: {
-    ADD: "/(admin)/clients/add",
-    DETAIL: (id: string) => `/(admin)/clients/${id}`,
+    ADD: "/(home)/clients/add",
+    DETAIL: (id: string) => `/(home)/clients/${id}`,
   },
   WORKER: {
-    DASHBOARD: "/(worker)/dashboard",
+    DASHBOARD: "/(home)/dashboard",
   },
+  WORKFORCE: {
+    REQUESTS: "/(home)/workers/requests",
+    OUTGOING_REQUESTS: "/(home)/workers/requests?tab=outgoing",
+    INCOMING_REQUESTS: "/(home)/workers/requests?tab=incoming",
+  },
+
   AUTH: {
     LOGIN: "/(auth)/login",
     REGISTER: "/(auth)/register",
+    VERIFY_OTP: "/(auth)/verify-otp",
   },
 } as const;
+

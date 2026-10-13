@@ -9,6 +9,7 @@ export const StorageKeys = {
   REFRESH_TOKEN: "refresh_token",
   USER_ID: "user_id",
   PAYOUT_DAY: "payout_day",
+  WORKFORCE: "workforce",
 } as const;
 
 export type StorageKey = (typeof StorageKeys)[keyof typeof StorageKeys];
@@ -36,6 +37,14 @@ export async function getSecureValue(key: StorageKey): Promise<string | null> {
  */
 export async function deleteSecureValue(key: StorageKey): Promise<void> {
   await SecureStore.deleteItemAsync(key);
+}
+
+export async function clearSecureStorage(): Promise<void> {
+  await Promise.all(
+    Object.values(StorageKeys).map((key) =>
+      SecureStore.deleteItemAsync(key),
+    ),
+  );
 }
 
 /**

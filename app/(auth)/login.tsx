@@ -1,91 +1,77 @@
-import { TextInput } from "@/src/components/input";
+import { PhoneInput } from "@/src/components/input";
+import { AuthWrapper } from "@/src/components/auth/AuthWrapper";
 import { Button } from "@/src/components/ui/Button";
-import { useAuth } from "@/src/hooks";
+import { useSendOtp } from "@/src/hooks";
 import { LoginFormData, loginSchema } from "@/src/schema/auth.schema";
+import { useAuthFlowStore } from "@/src/store/auth.store";
+import { AppRoutes } from "@/src/routes/app.routes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
-import React from "react";
+import { Link, router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { SafeAreaWrapper } from "@/src/components/ui/SafeAreaWrapper";
 import { Text, View } from "react-native";
+import Toast from "react-native-toast-message";
+import KeyboardAvoidingWrapper from "@/src/components/ui/KeybardAvoidingWrapper";
 
 export default function LoginScreen() {
-  // const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoading } = useAuth();
+  const sendOtpMutation = useSendOtp();
+  const setUserPhone = useAuthFlowStore((s) => s.setUserPhone);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
+  const phoneForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
-      email: "",
-      password: "",
+      phone: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const handleSendOtp = async (data: LoginFormData) => {
     try {
-      await login(data);
+      await sendOtpMutation.mutateAsync(data.phone);
+      Toast.show({
+        type: "success",
+        text1: "OTP Sent",
+        text2: "OTP has been sent successfully",
+      });
+      // Persist phone in Zustand so the verify-otp screen can read it
+      setUserPhone(data.phone);
+      router.push(AppRoutes.AUTH.VERIFY_OTP);
     } catch {
-      // Error already handled in useAuth hook with toast
+      // Error toast handled globally by MutationCache
     }
   };
 
   return (
-    <SafeAreaWrapper>
-      <View className="flex-1 justify-center p-6">
-        <Text className="text-4xl font-bold text-slate-800 text-center mb-2">
-          SiteKhata
-        </Text>
-        <Text className="text-base text-slate-500 text-center mb-12">
-          Manage your sites and workers
-        </Text>
-
+    <KeyboardAvoidingWrapper
+      header={null}
+      resetScrollOnKeyboardHide
+      contentContainerClassName="flex-grow justify-center p-6"
+      containerClassName="flex-1 bg-[#F9FAFB]"
+    >
+      <AuthWrapper title="Sign In" description="Please enter your details.">
         <View className="w-full">
           <Controller
-            control={control}
-            name="email"
+            control={phoneForm.control}
+            name="phone"
             render={({ field: { onChange, onBlur, value } }: any) => (
-              <TextInput
-                label="Email"
-                placeholder="Enter email"
-                keyboardType="email-address"
-                leftIcon="mail"
-                autoCapitalize="none"
+              <PhoneInput
+                label="Mobile Number"
+                required
+                disableCountrySelection
+                placeholder="Enter mobile number"
+                maxLength={10}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                error={errors.email?.message as string | undefined}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }: any) => (
-              <TextInput
-                label="Password"
-                placeholder="Enter your password"
-                leftIcon="lock-closed-outline"
-                isPassword
-                autoCapitalize="none"
-                autoComplete="password"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.password?.message}
+                error={phoneForm.formState.errors.phone?.message}
               />
             )}
           />
 
           <Button
-            title="Login"
-            onPress={handleSubmit(onSubmit)}
-            isLoading={isLoading}
+            title="Send OTP"
+            onPress={phoneForm.handleSubmit(handleSendOtp)}
+            isLoading={sendOtpMutation.isPending}
+            style={{ marginTop: 12 }}
           />
 
           <View className="flex-row justify-center mt-6">
@@ -97,7 +83,7 @@ export default function LoginScreen() {
             </Link>
           </View>
         </View>
-      </View>
-    </SafeAreaWrapper>
+      </AuthWrapper>
+    </KeyboardAvoidingWrapper>
   );
 }

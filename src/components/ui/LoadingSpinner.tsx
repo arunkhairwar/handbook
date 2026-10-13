@@ -1,12 +1,13 @@
-import { Colors } from '@/constants/Colors';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { cn } from '@/src/lib/utils';
 
 interface LoadingSpinnerProps {
     fullScreen?: boolean;
     message?: string;
     color?: string;
     size?: 'small' | 'large' | number;
+    className?: string;
 }
 
 export function LoadingSpinner({
@@ -14,43 +15,31 @@ export function LoadingSpinner({
     message,
     color,
     size = 'large',
+    className,
 }: LoadingSpinnerProps) {
-    // Default to a primary color if available, or a fallback color
-    const spinnerColor = color || (Colors.primary ?? '#0000ff');
+    const spinnerColor = color || '#1E293B';
 
     if (fullScreen) {
         return (
-            <View style={styles.fullScreenContainer}>
+            <View className={cn('flex-1 items-center justify-center bg-card', className)}>
                 <ActivityIndicator size={size} color={spinnerColor} />
-                {message && <Text style={styles.message}>{message}</Text>}
+                {message && (
+                    <Text className="mt-3 text-base text-text font-medium">
+                        {message}
+                    </Text>
+                )}
             </View>
         );
     }
 
     return (
-        <View style={styles.container}>
+        <View className={cn('p-4 items-center justify-center', className)}>
             <ActivityIndicator size={size} color={spinnerColor} />
-            {message && <Text style={styles.message}>{message}</Text>}
+            {message && (
+                <Text className="mt-3 text-base text-text font-medium">
+                    {message}
+                </Text>
+            )}
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        padding: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    fullScreenContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
-    },
-    message: {
-        marginTop: 12,
-        fontSize: 16,
-        color: '#333',
-        fontWeight: '500',
-    },
-});

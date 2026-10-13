@@ -1,31 +1,46 @@
-export const API_BASE_URL = "http://192.168.1.41:3000/api";
+export const API_BASE_URL = `${process.env.EXPO_PUBLIC_API_URL}/api/v1`;
+console.log(API_BASE_URL);
 
 export const ENDPOINTS = {
   AUTH: {
-    LOGIN: "/auth/login",
+    SEND_OTP: "/auth/send-otp",
+    VERIFY_OTP: "/auth/verify-otp",
     REGISTER: "/auth/register",
-    VERIFY: "/auth/verify",
+    LOGIN: "/auth/login"
+  },
+  USER: {
+    ME: "/users/me",
+    UPDATE: "/users/me"
   },
   CLIENT: {
-    CREATE: "/client",
-    GET_ALL: "/client",
-    GET_BY_ID: (id: string) => `/client/${id}`,
-    UPDATE: (id: string) => `/client/${id}`,
-    DELETE: (id: string) => `/client/${id}`,
+    CREATE: "/clients",
+    GET_ALL: "/clients",
+    GET_BY_ID: (id: string) => `/clients/${id}`,
+    UPDATE: (id: string) => `/clients/${id}`,
+    DELETE: (id: string) => `/clients/${id}`,
   },
   SITE: {
-    CREATE: "/site",
-    GET_ALL: "/site",
-    GET_BY_ID: (id: string) => `/site/${id}`,
-    UPDATE: (id: string) => `/site/${id}`,
-    DELETE: (id: string) => `/site/${id}`,
+    CREATE: "/sites",
+    GET_ALL: "/sites",
+    GET_BY_ID: (id: string) => `/sites/${id}`,
+    UPDATE: (id: string) => `/sites/${id}`,
+    DELETE: (id: string) => `/sites/${id}`,
   },
   WORKER: {
-    CREATE: "/worker",
-    GET_ALL: "/worker",
-    GET_BY_ID: (id: string) => `/worker/${id}`,
-    UPDATE: (id: string) => `/worker/${id}`,
-    DELETE: (id: string) => `/worker/${id}`,
+    SEARCH: "/workers/search",
+    GET_BY_ID: (id: string) => `/workers/${id}`,
+  },
+  WORKFORCE: {
+    CREATE: "/workforces",
+    GET_MY: "/workforces",
+    GET_WORKERS: (workforceId: string) => `/workforces/${workforceId}/workers`,
+  },
+  WORKFORCE_REQUEST: {
+    CREATE: "/workforce-requests",
+    GET_OUTGOING: "/workforce-requests/outgoing",
+    GET_INCOMING: "/workforce-requests/incoming",
+    UPDATE_STATUS: "/workforce-requests",
+    CANCEL: (requestId: string) => `/workforce-requests/${requestId}`,
   },
 };
 

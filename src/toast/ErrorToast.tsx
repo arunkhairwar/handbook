@@ -6,10 +6,11 @@ import { getBaseToastStyle, styles } from "./toastStyles";
 export default function ErrorToast({ text1, text2 }: any, isDark: boolean) {
   const [expanded, setExpanded] = useState(false);
 
-  const shouldTruncate = text2 && text2.length > 100;
+  const safeText2 = typeof text2 === "string" ? text2 : text2 ? String(text2) : "";
+  const shouldTruncate = safeText2 && safeText2.length > 100;
 
   const displayText =
-    shouldTruncate && !expanded ? text2.substring(0, 100) + "..." : text2;
+    shouldTruncate && !expanded ? safeText2.substring(0, 100) + "..." : safeText2;
 
   return (
     <View

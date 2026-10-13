@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  StyleSheet,
   TouchableOpacity,
   Platform,
   Modal,
@@ -11,7 +10,6 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { Input } from "./Input";
-import { Colors } from "@/constants/Colors";
 import moment from "moment";
 
 export interface DateTimePickerProps {
@@ -96,7 +94,7 @@ export function DateTimePicker({
   const iosMode = onlyDate ? "date" : onlyTime ? "time" : "datetime";
 
   return (
-    <View style={styles.container}>
+    <View className="w-full">
       <TouchableOpacity onPress={handlePress} activeOpacity={0.7}>
         <View pointerEvents="none">
           <Input
@@ -131,20 +129,20 @@ export function DateTimePicker({
       {Platform.OS === "ios" && (
         <Modal visible={showPicker} transparent animationType="slide">
           <TouchableOpacity
-            style={styles.modalOverlay}
+            className="flex-1 justify-end bg-black/40"
             activeOpacity={1}
             onPress={handleIosDone}
           >
             <View
-              style={styles.modalContent}
+              className="bg-card pb-5"
               onStartShouldSetResponder={() => true}
             >
-              <View style={styles.modalHeader}>
+              <View className="flex-row justify-end p-4 border-b border-border bg-background">
                 <TouchableOpacity
                   onPress={handleIosDone}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Text style={styles.doneText}>Done</Text>
+                  <Text className="text-primary text-base font-bold">Done</Text>
                 </TouchableOpacity>
               </View>
               <RNDateTimePicker
@@ -160,31 +158,3 @@ export function DateTimePicker({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.4)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    paddingBottom: 20,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    backgroundColor: "#f8f8f8",
-  },
-  doneText: {
-    color: Colors.primary,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

@@ -1,7 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps, StyleSheet } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
+import { cn } from '@/src/lib/utils';
 
 export type FabVariant = 'primary' | 'success' | 'danger' | 'warning';
 
@@ -14,6 +14,13 @@ interface FloatingActionButtonProps extends TouchableOpacityProps {
     className?: string;
 }
 
+const variantBgClasses: Record<FabVariant, string> = {
+    primary: 'bg-primary',
+    success: 'bg-success',
+    danger: 'bg-error',
+    warning: 'bg-warning',
+};
+
 export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
     iconName = 'add',
     iconSize = 30,
@@ -24,44 +31,19 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
     className,
     ...props
 }) => {
-    const getBackgroundColor = () => {
-        switch (variant) {
-            case 'success': return Colors.success;
-            case 'danger': return Colors.error;
-            case 'warning': return Colors.warning;
-            case 'primary':
-            default: return Colors.primary;
-        }
-    };
-
     return (
         <TouchableOpacity
-            className={`justify-center items-center ${className || ''}`}
-            style={[
-                styles.fab,
-                { backgroundColor: getBackgroundColor() },
-                style
-            ]}
+            className={cn(
+                'absolute bottom-6 right-6 w-14 h-14 rounded-full justify-center items-center shadow-lg elevation-5',
+                variantBgClasses[variant],
+                className
+            )}
+            style={style}
             onPress={onPress}
+            activeOpacity={0.8}
             {...props}
         >
             <Ionicons name={iconName} size={iconSize} color={iconColor} />
         </TouchableOpacity>
     );
 };
-
-const styles = StyleSheet.create({
-    fab: {
-        position: 'absolute',
-        bottom: 24,
-        right: 24,
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-    }
-});

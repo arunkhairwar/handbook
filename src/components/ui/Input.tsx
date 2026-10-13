@@ -1,69 +1,56 @@
-import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { cn } from '@/src/lib/utils';
 
 interface InputProps extends TextInputProps {
     label?: string;
     error?: string;
     rightIcon?: keyof typeof Ionicons.glyphMap;
     onRightIconPress?: () => void;
+    containerClassName?: string;
 }
 
-export function Input({ label, error, rightIcon, onRightIconPress, style, ...props }: InputProps) {
+export function Input({
+    label,
+    error,
+    rightIcon,
+    onRightIconPress,
+    style,
+    className,
+    containerClassName,
+    ...props
+}: InputProps) {
     return (
-        <View style={styles.container}>
-            {label && <Text style={styles.label}>{label}</Text>}
-            <View style={[styles.inputContainer, error ? styles.inputError : null]}>
+        <View className={cn('my-2', containerClassName)}>
+            {label && (
+                <Text className="text-sm font-medium text-text mb-1">
+                    {label}
+                </Text>
+            )}
+            <View
+                className={cn(
+                    'flex-row items-center border rounded-lg bg-card',
+                    error ? 'border-error' : 'border-border'
+                )}
+            >
                 <TextInput
-                    style={[styles.input, style]}
-                    placeholderTextColor={Colors.textSecondary}
+                    className={cn('flex-1 p-3 text-base text-text', className)}
+                    style={style}
+                    placeholderTextColor="#64748B"
                     {...props}
                 />
                 {rightIcon && (
-                    <TouchableOpacity onPress={onRightIconPress} style={styles.iconContainer}>
-                        <Ionicons name={rightIcon} size={20} color={Colors.textSecondary} />
+                    <TouchableOpacity onPress={onRightIconPress} className="p-2.5">
+                        <Ionicons name={rightIcon} size={20} color="#64748B" />
                     </TouchableOpacity>
                 )}
             </View>
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {error && (
+                <Text className="text-xs text-error mt-1">
+                    {error}
+                </Text>
+            )}
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        marginVertical: 8,
-    },
-    label: {
-        fontSize: 14,
-        fontWeight: '500',
-        color: Colors.text,
-        marginBottom: 4,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: Colors.border,
-        borderRadius: 8,
-        backgroundColor: '#fff',
-    },
-    input: {
-        flex: 1,
-        padding: 12,
-        fontSize: 16,
-        color: Colors.text,
-    },
-    inputError: {
-        borderColor: Colors.error,
-    },
-    iconContainer: {
-        padding: 10,
-    },
-    errorText: {
-        fontSize: 12,
-        color: Colors.error,
-        marginTop: 4,
-    },
-});

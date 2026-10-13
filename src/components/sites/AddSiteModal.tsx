@@ -32,7 +32,7 @@ export function AddSiteModal({
     resolver: zodResolver(createSiteSchema),
     defaultValues: {
       name: "",
-      client: "",
+      clientId: "",
       address: {
         addressLine1: "",
         addressLine2: "",
@@ -99,7 +99,7 @@ export function AddSiteModal({
 
             <Controller
               control={control}
-              name="client"
+              name="clientId"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   label="Client ID *"
@@ -107,7 +107,7 @@ export function AddSiteModal({
                   onChangeText={onChange}
                   onBlur={onBlur}
                   placeholder="e.g. 12345"
-                  error={errors.client?.message}
+                  error={errors.clientId?.message}
                 />
               )}
             />

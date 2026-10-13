@@ -2,7 +2,7 @@ import axiosInstance from "../api/axios.instance";
 import ENDPOINTS from "../api/endpoints";
 import { Client } from "../types/client.types";
 import { z } from "zod";
-import { createClientSchema, updateClientSchema } from "../types/client.types";
+import { createClientSchema, updateClientSchema } from "../schema/client.schema";
 
 export type CreateClientData = z.infer<typeof createClientSchema>;
 export type UpdateClientData = z.infer<typeof updateClientSchema>;
