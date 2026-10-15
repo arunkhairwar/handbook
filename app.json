@@ -8,7 +8,8 @@
     "scheme": "sitekhata",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sitekhata.app"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
