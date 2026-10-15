@@ -20,7 +20,7 @@
         "monochromeImage": "./assets/images/logo3.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.SiteKhata"
+      "package": "com.sitekhata.app"
     },
     "web": {
       "output": "static",
